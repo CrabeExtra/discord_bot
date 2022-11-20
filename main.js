@@ -5,19 +5,39 @@ import {
 } from './deps.js';
 
 import { config } from "./deps.js"
+import { cron } from './deps.js';
 
-const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING"] });
-let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject(); //config();
+import { handleSlashCommands } from './slashCommands.js';
 
-client.on('ready', () => {
+import { commands } from './commandDeclarations.js';
+
+import { init, getAllBirthdays } from './dataBaseFunctions.js';
+
+const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
+let {BOT_TOKEN, GUILD_ID_QG } = config(); //Deno.env.toObject(); 
+
+
+
+client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
+    init();
+
     const guildId = GUILD_ID_QG; // change per server
 
-    let commands;
+    commands.forEach(command => {
+        client.slash.commands.create(command, guildId)
+            .then((cmd) => console.log(`Created Slash Command ${cmd.name}!`))
+            .catch((cmd) => console.log(`Failed to create ${cmd.name} command!`));
+    });
 
-    commands = client.application?.commands;
-    
-    
+    let birthdays = (await getAllBirthdays());
+
+    birthdays.forEach((birthday) => {
+        cron(`* * ${birthday[2]} ${birthday[3]} */1`, async () => {
+            (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${birthday[1]}!`)
+        });
+    })
+
 });
 
 client.on('messageCreate', (msg) => {
@@ -27,5 +47,14 @@ client.on('messageCreate', (msg) => {
         msg.reply('Gday cunt');
     }
 });
+
+client.on("guildMemberAdd", async (member) => {
+    (await member.guild.channels.get('1043458605636132875')).send(`Good day ${member.user.username}. Would you like some tea and biscuits?`);
+    let role = await member.guild.roles.get('1043459158567026748');
+    
+    member.roles.add(role);
+});
+
+client.on("interactionCreate", (interaction) => handleSlashCommands(interaction))
 
 client.connect(BOT_TOKEN, Intents.None);
