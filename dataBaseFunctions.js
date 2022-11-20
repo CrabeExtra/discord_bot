@@ -6,8 +6,8 @@ import {
 } from "./deps.js";
 
 // Prepare the file in memory before opening it.
-await prepareLocalFile("./db.sqlite");
-prepareVirtualFile("./db.sqlite-journal");
+await prepareLocalFile("./birthdays.sqlite");
+prepareVirtualFile("./birthdays.sqlite-journal");
 
 export const db = new DB("./birthdays.sqlite");
 
