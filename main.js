@@ -14,8 +14,8 @@ import { commands } from './commandDeclarations.js';
 import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
 
 const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
-//let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject();  
-let {BOT_TOKEN, GUILD_ID_QG } = config(); 
+let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject();  
+//let {BOT_TOKEN, GUILD_ID_QG } = config(); 
 
 initialise();
 
