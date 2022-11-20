@@ -17,7 +17,7 @@ const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE
 let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject();  
 //let {BOT_TOKEN, GUILD_ID_QG } = config(); 
 
-initialise();
+//initialise();
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
