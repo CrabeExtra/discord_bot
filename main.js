@@ -7,7 +7,7 @@ import {
 import { config } from "./deps.js"
 
 const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING"] });
-let {BOT_TOKEN, GUILD_ID_QG } = config();
+let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject(); //config();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user?.tag}!`);
