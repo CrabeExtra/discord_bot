@@ -1,4 +1,4 @@
-import { addBirthday, deleteBirthday, getBirthday } from "./dataBaseFunctions.js";
+//import { addBirthday, deleteBirthday, getBirthday } from "./dataBaseFunctions.js";
 import { cron } from './deps.js';
 
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
