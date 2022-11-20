@@ -11,12 +11,13 @@ import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
 
-import { getAllBirthdays } from './dataBaseFunctions.js';
+import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
 
 const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
-let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject();  
-//let {BOT_TOKEN, GUILD_ID_QG } = config(); 
+//let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject();  
+let {BOT_TOKEN, GUILD_ID_QG } = config(); 
 
+initialise();
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
@@ -29,13 +30,17 @@ client.on('ready', async () => {
             .catch((cmd) => console.log(`Failed to create ${cmd.name} command!`));
     });
 
-    // let birthdays = (await getAllBirthdays());
-    // console.log(birthdays);
-    // birthdays.forEach((birthday) => {
-    //     cron(`* * ${birthday[2]} ${birthday[3]} */1`, async () => {
-    //         (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${birthday[1]}!`)
-    //     });
-    // })
+    let birthdays = (await getAllBirthdays());
+    let elementFound = [];
+    for (const item of birthdays.query({})) {
+        elementFound.push(item)
+    }
+    
+    elementFound.forEach((birthday) => {
+        cron(`* * ${birthday[2]} ${birthday[3]} */1`, async () => {
+            (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${birthday[1]}!`)
+        });
+    })
 
 });
 

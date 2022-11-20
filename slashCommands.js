@@ -19,7 +19,7 @@ export const handleSlashCommands = async (interaction) => {
 
             // add birthdays to database (note to add scheduler to all birthdays on bot restart - ready)
             response = await addBirthday(userId, username, day, month, year);
-
+        
             // schedule annual birthday message
             cron(`* * ${day} ${month} */1`, async () => {
                 (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${username}!`)
@@ -41,9 +41,14 @@ export const handleSlashCommands = async (interaction) => {
         break;
         case "birthday":
             response = await getBirthday(userId);
-            if(response[0]) {
+            //console.log(response);
+            let elementFound;
+            for (const item of response.query({})) {
+                elementFound = item
+            }
+            if(elementFound) {
                 interaction.respond({
-                    content: `I believe you said your birthday was on ${response[0][2]}/${response[0][3]}/${response[0][4]}. If you told me the incorrect birthday, you may tell me your true birthday.`,
+                    content: `I believe you said your birthday was on ${elementFound[2]}/${elementFound[3]}/${elementFound[4]}. If you told me the incorrect birthday, you may tell me your true birthday.`,
                     ephemeral: true
                 });
             } else {
