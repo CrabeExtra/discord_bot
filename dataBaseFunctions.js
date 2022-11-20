@@ -1,4 +1,13 @@
 import { DB } from "./deps.js"
+import { serve } from "./deps.js";
+import {
+    prepareLocalFile,
+    prepareVirtualFile,
+} from "./deps.js";
+
+// Prepare the file in memory before opening it.
+await prepareLocalFile("./db.sqlite");
+prepareVirtualFile("./db.sqlite-journal");
 
 export const db = new DB("./birthdays.sqlite");
 
