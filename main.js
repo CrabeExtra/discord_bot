@@ -30,17 +30,17 @@ client.on('ready', async () => {
             .catch((cmd) => console.log(`Failed to create ${cmd.name} command!`));
     });
 
-    let birthdays = (await getAllBirthdays());
-    let elementFound = [];
-    for (const item of birthdays.query({})) {
-        elementFound.push(item)
-    }
+    // let birthdays = (await getAllBirthdays());
+    // let elementFound = [];
+    // for (const item of birthdays.query({})) {
+    //     elementFound.push(item)
+    // }
     
-    elementFound.forEach((birthday) => {
-        cron(`* * ${birthday[2]} ${birthday[3]} */1`, async () => {
-            (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${birthday[1]}!`)
-        });
-    })
+    // elementFound.forEach((birthday) => {
+    //     cron(`* * ${birthday[2]} ${birthday[3]} */1`, async () => {
+    //         (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${birthday[1]}!`)
+    //     });
+    // })
 
 });
 
