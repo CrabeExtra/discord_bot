@@ -20,7 +20,7 @@ client.on('ready', () => {
     
 });
 
-client.on('messageCreate', (msg: any) => {
+client.on('messageCreate', (msg) => {
     const content = msg.content;
     //console.log(msg);
     if(content.toLowerCase().includes("butler")) {
