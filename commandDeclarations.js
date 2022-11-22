@@ -1,4 +1,4 @@
-import { SlashCommandOptionType } from './deps.js'
+//import { SlashCommandOptionType } from './deps.js'
 
 export const commands = [
     // {

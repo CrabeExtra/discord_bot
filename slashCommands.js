@@ -1,5 +1,5 @@
-//import { addBirthday, deleteBirthday, getBirthday } from "./dataBaseFunctions.js";
-import { cron } from './deps.js';
+import { addBirthday, deleteBirthday, getBirthday } from "./dataBaseFunctions.js";
+import * as cron from 'cron';
 
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
 
@@ -7,82 +7,78 @@ export const handleSlashCommands = async (interaction) => {
     let userId = interaction.user.id;
     let username = interaction.user.username
     let response;
-
-    switch (interaction.data.name) {
-        // case "set_birthday":
+    
+    switch (interaction.commandName) {
+        case "set_birthday":
             
-        //     // set variables
-        //     let day = interaction.data.options.find((e) => e.name === "day").value
-        //     let month = interaction.data.options.find((e) => e.name === "month").value
-        //     let year = interaction.data.options.find((e) => e.name === "year").value
+            // set variables
+            let day = interaction.options.getString("day")
+            let month = interaction.options.getString("month")
+            let year = interaction.options.getString("year")
             
 
-        //     // add birthdays to database (note to add scheduler to all birthdays on bot restart - ready)
-        //     response = await addBirthday(userId, username, day, month, year);
+            // add birthdays to database (note to add scheduler to all birthdays on bot restart - ready)
+            response = await addBirthday(userId, username, day, month, year);
         
-        //     // schedule annual birthday message
-        //     cron(`* * ${day} ${month} */1`, async () => {
-        //         (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${username}!`)
-        //     });
+            // schedule annual birthday message
+            new cron.CronJob(`* * ${day} ${month} */1`, async () => {
+                (await interaction.guild.channels.cache.find((i) => i.name === 'foyer')).send(`Everyone wish a happy birthday to ${username}!`)
+            }, null, true, 'America/New_York');//, null, true); // <-- null, true has it send birthday message straight away so you know it's working properly
 
-        //     // respond
-        //     if(response === "success") {
-        //         interaction.respond({
-        //             content: `I will remember your birthday to be on ${day}/${month}/${year}`,
-        //             ephemeral: true
-        //         });
-        //     } else if (response === "error") {
-        //         interaction.respond({
-        //             content: `My memory seems to be failing me, or maybe you have told me utter bullshit as your birth date, please take this matter to the bar tender, Crabe Extra.`,
-        //             ephemeral: true
-        //         });
-        //     }
+            // respond
+            if(response === "success") {
+                interaction.reply({
+                    content: `I will remember your birthday to be on ${day}/${month}/${year}`,
+                    ephemeral: true
+                });
+            } else if (response === "error") {
+                interaction.reply({
+                    content: `My memory seems to be failing me, or maybe you have told me utter bullshit as your birth date, please take this matter to the bar tender, Crabe Extra.`,
+                    ephemeral: true
+                });
+            }
             
-        // break;
-        // case "birthday":
-        //     response = await getBirthday(userId);
-        //     //console.log(response);
-        //     let elementFound;
-        //     for (const item of response.query({})) {
-        //         elementFound = item
-        //     }
-        //     if(elementFound) {
-        //         interaction.respond({
-        //             content: `I believe you said your birthday was on ${elementFound[2]}/${elementFound[3]}/${elementFound[4]}. If you told me the incorrect birthday, you may tell me your true birthday.`,
-        //             ephemeral: true
-        //         });
-        //     } else {
-        //         interaction.respond({
-        //             content: `I don't believe you have told me your birthday.`,
-        //             ephemeral: true
-        //         });
-        //     }
+        break;
+        case "birthday":
+            response = await getBirthday(userId);
+
+            if(response) {
+                interaction.reply({
+                    content: `I believe you said your birthday was on ${response.day}/${response.month}/${response.year}. If you told me the incorrect birthday, you may tell me your true birthday.`,
+                    ephemeral: true
+                });
+            } else {
+                interaction.reply({
+                    content: `I don't believe you have told me your birthday.`,
+                    ephemeral: true
+                });
+            }
             
-        // break;
-        // case "delete_birthday": 
-        //     response = await deleteBirthday(userId);
-        //     interaction.respond({
-        //         content: `I can't seem to recall your birthday.`,
-        //         ephemeral: true
-        //     });
-        // break;
+        break;
+        case "delete_birthday": 
+            response = await deleteBirthday(userId);
+            interaction.reply({
+                content: `I can't seem to recall your birthday.`,
+                ephemeral: true
+            });
+        break;
         case "phas_spirit_box":
-            interaction.respond({
+            interaction.reply({
                 content: spiritBox
             });
         break;
         case "phas_general":
-            interaction.respond({
+            interaction.reply({
                 content: general
             });
         break;
         case "phas_ouija_board":
-            interaction.respond({
+            interaction.reply({
                 content: ouijaBoard
             });
         break;
         case "phas_trig":
-            interaction.respond({
+            interaction.reply({
                 content: toTrigger
             });
         break;

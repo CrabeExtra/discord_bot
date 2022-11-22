@@ -1,46 +1,48 @@
-import {
-    Client,
-    Message,
-    Intents
-} from './deps.js';
+import discord, { Client, GatewayIntentBits } from 'discord.js';
 
-import { config } from "./deps.js"
-import { cron } from './deps.js';
+import * as dotenv from "dotenv"
+import * as cron from 'cron';
 
 import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
 
-// import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
+import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
 
-const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
-let {BOT_TOKEN, GUILD_ID_QG } = Deno.env.toObject();  
-//let {BOT_TOKEN, GUILD_ID_QG } = config(); 
+//const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers] });
+
+let {BOT_TOKEN, GUILD_ID_QG} = dotenv.config().parsed; 
 
 //initialise();
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
-
+    await initialise()
     const guildId = GUILD_ID_QG; // change per server
 
+    let guild = client.guilds.cache.get(guildId);
+
+    let c;
+
+    if(guild) {
+        c = guild.commands;
+    } else {
+        c = client.application?.commands;
+    }
     commands.forEach(command => {
-        client.slash.commands.create(command, guildId)
+        c?.create(command)
             .then((cmd) => console.log(`Created Slash Command ${cmd.name}!`))
             .catch((cmd) => console.log(`Failed to create ${cmd.name} command!`));
     });
 
-    // let birthdays = (await getAllBirthdays());
-    // let elementFound = [];
-    // for (const item of birthdays.query({})) {
-    //     elementFound.push(item)
-    // }
+    let birthdays = (await getAllBirthdays());
     
-    // elementFound.forEach((birthday) => {
-    //     cron(`* * ${birthday[2]} ${birthday[3]} */1`, async () => {
-    //         (await interaction.guild.channels.get('1043727687279181975')).send(`Everyone wish a happy birthday to ${birthday[1]}!`)
-    //     });
-    // })
+    birthdays.forEach((birthday) => {
+        new cron.CronJob(`* * ${birthday.day} ${birthday.month} */1`, async () => {
+            guild.channels.cache.find((i) => i.name === 'foyer').send(`Everyone wish a happy birthday to ${birthday.username}!`)
+        }, null, true, 'America/New_York');//, null, true); // <-- null, true has it send birthday message straight away so you know it's working properly
+    })
 
 });
 
@@ -61,4 +63,4 @@ client.on("guildMemberAdd", async (member) => {
 
 client.on("interactionCreate", (interaction) => handleSlashCommands(interaction))
 
-client.connect(BOT_TOKEN, Intents.None);
+client.login(BOT_TOKEN);
