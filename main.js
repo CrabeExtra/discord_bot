@@ -10,7 +10,7 @@ import { commands } from './commandDeclarations.js';
 import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
 
 //const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] });
 
 let {BOT_TOKEN, GUILD_ID_QG} = dotenv.config().parsed; 
 
