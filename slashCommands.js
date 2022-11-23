@@ -70,16 +70,22 @@ export const handleSlashCommands = async (interaction) => {
                 content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
                 ephemeral: true
             });
-
-            const response = await openai.createImage({
-                prompt: description,
-                n: 1,
-                size: "1024x1024",
-            });
-            // console.log(response);
-            // console.log(response.data.data[0].url)
-            let imageUrl = response.data.data[0].url;
-            (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
+            try {
+                const response = await openai.createImage({
+                    prompt: description,
+                    n: 1,
+                    size: "1024x1024",
+                });
+                // console.log(response);
+                // console.log(response.data.data[0].url)
+                let imageUrl = response.data.data[0].url;
+                (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("Here is the painting you requested...")
+                (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
+            } catch(e) {
+                console.log(e);
+                (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("It appears I have run into some problems creating the painting your requested good citizen.")
+            }
+            
 
         break;
         case "delete_birthday": 
