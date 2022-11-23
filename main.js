@@ -22,10 +22,10 @@ client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
     await initialise()
     const guildId = GUILD_ID_QG; // change per server
-    deepai.setApiKey("33f72fde-d5ea-468b-953c-a6b9c6e488e9")
-    console.log(await deepai.callStandardApi("text2img", {
-        text: "mario with a doughnut"
-    }));
+    // deepai.setApiKey("33f72fde-d5ea-468b-953c-a6b9c6e488e9")
+    // console.log(await deepai.callStandardApi("text2img", {
+    //     text: "mario with a doughnut"
+    // }));
 
     let guild = client.guilds.cache.get(guildId);
 
@@ -61,10 +61,11 @@ client.on('messageCreate', (msg) => {
 });
 
 client.on("guildMemberAdd", async (member) => {
-    (await member.guild.channels.get('1043458605636132875')).send(`Good day ${member.user.username}. Would you like some tea and biscuits?`);
-    let role = await member.guild.roles.get('1043459158567026748');
+    const guildId = GUILD_ID_QG; // change per server
+    let guild = client.guilds.cache.get(guildId);
+    await guild.channels.cache.find((i) => i.name === 'welcome').send(`Good day ${member.user.username}. Would you like some tea and biscuits?`);
     
-    member.roles.add(role);
+    member.roles.add('1043459158567026748');
 });
 
 client.on("interactionCreate", (interaction) => handleSlashCommands(interaction))
