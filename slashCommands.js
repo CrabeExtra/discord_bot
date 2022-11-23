@@ -77,10 +77,10 @@ export const handleSlashCommands = async (interaction) => {
                     size: "1024x1024",
                 });
                 // console.log(response);
-                // console.log(response.data.data[0].url)
+                console.log(response.data.data[0].url)
                 let imageUrl = response.data.data[0].url;
-                (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("Here is the painting you requested...")
                 (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
+                //(await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
             } catch(e) {
                 console.log(e);
                 (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("It appears I have run into some problems creating the painting your requested good citizen.")
