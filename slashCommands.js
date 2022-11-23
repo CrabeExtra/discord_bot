@@ -1,7 +1,16 @@
 import { addBirthday, deleteBirthday, getBirthday } from "./dataBaseFunctions.js";
 import * as cron from 'cron';
-
+import * as dotenv from "dotenv"
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
+import { Configuration, OpenAIApi } from "openai";
+
+const { OPEN_AI_KEY } = dotenv.config().parsed; 
+
+const configuration = new Configuration({
+	apiKey: OPEN_AI_KEY,
+});
+
+const openai = new OpenAIApi(configuration);
 
 export const handleSlashCommands = async (interaction) => {
     let userId = interaction.user.id;
@@ -54,6 +63,24 @@ export const handleSlashCommands = async (interaction) => {
                 });
             }
             
+        break;
+        case "draw_picture":
+            let description = interaction.options.getString("description");
+            interaction.reply({
+                content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
+                ephemeral: true
+            });
+
+            const response = await openai.createImage({
+                prompt: description,
+                n: 1,
+                size: "1024x1024",
+            });
+            // console.log(response);
+            // console.log(response.data.data[0].url)
+            let imageUrl = response.data.data[0].url;
+            (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
+
         break;
         case "delete_birthday": 
             response = await deleteBirthday(userId);

@@ -9,8 +9,6 @@ import { commands } from './commandDeclarations.js';
 
 import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
 
-import deepai from "deepai";
-
 //const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] });
 

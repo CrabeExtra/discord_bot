@@ -4,6 +4,7 @@
     "deepai": "^1.0.21",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
+    "openai": "^3.1.0",
     "sqlite": "^4.1.2",
     "sqlite3": "^5.1.2",
     "text-to-image": "^5.2.0"

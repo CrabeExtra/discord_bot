@@ -28,6 +28,18 @@ export const commands = [
         ]
     },
     {
+        name: "draw_picture",
+        description: "Request a picture of your description be painted by the butler",
+        options: [
+            {
+                name: "description",
+                description: "What do you want the Butler to paint?",
+                required: true,
+                type: 3
+            }
+        ]
+    },
+    {
         name: "birthday",
         description: "see what birthday has been logged by the butler"
     },
