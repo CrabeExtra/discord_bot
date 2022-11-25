@@ -1,8 +1,11 @@
-import { addBirthday, deleteBirthday, getBirthday } from "./dataBaseFunctions.js";
+import { addBirthday, deleteBirthday, getBirthday, incrementImageNumber, getImageNumber } from "./dataBaseFunctions.js";
 import * as cron from 'cron';
 import * as dotenv from "dotenv"
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
 import { Configuration, OpenAIApi } from "openai";
+import fetch from "node-fetch"
+import fs from 'fs';
+
 
 const { OPEN_AI_KEY } = dotenv.config().parsed; 
 
@@ -66,10 +69,10 @@ export const handleSlashCommands = async (interaction) => {
         break;
         case "draw_picture":
             let description = interaction.options.getString("description");
-            interaction.reply({
-                content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
-                ephemeral: true
-            });
+            // interaction.reply({
+            //     content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
+            //     ephemeral: true
+            // });
             try {
                 const response = await openai.createImage({
                     prompt: description,
@@ -77,10 +80,21 @@ export const handleSlashCommands = async (interaction) => {
                     size: "1024x1024",
                 });
                 // console.log(response);
-                console.log(response.data.data[0].url)
                 let imageUrl = response.data.data[0].url;
-                (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
-                //(await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(imageUrl)
+
+                let fileName = `image_${(await getImageNumber())[0].nonce}`
+    
+                console.log(fileName);
+
+                let res = await fetch(imageUrl);
+                    
+                let stream = res.body.pipe(fs.createWriteStream(`./images/${fileName}.png`));
+
+                stream.on("finish", async () => {
+                    (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send({ files: [`./images/${fileName}.png`]})
+                    await incrementImageNumber();
+                })
+                
             } catch(e) {
                 console.log(e);
                 (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("It appears I have run into some problems creating the painting your requested good citizen.")

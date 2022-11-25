@@ -11,6 +11,7 @@ export async function openDb () {
 export const initialise = async () => {
     let db = await openDb();
     await db.run("CREATE TABLE IF NOT EXISTS birthdays(id TEXT PRIMARY KEY, username TEXT, day TEXT, month TEXT, year TEXT)");
+    await db.run("CREATE TABLE IF NOT EXISTS imageNonce(id TEXT PRIMARY KEY, nonce)");
 }
 
 
@@ -61,5 +62,27 @@ export const deleteBirthday = async (userId) => {
     } catch(e) {
         console.error(e);
         return 'error';
+    }
+}
+
+export const incrementImageNumber = async () => {
+    let db = await openDb();
+    try {
+        let newNonce = (await getImageNumber())[0].nonce + 1;
+        await db.run(`INSERT OR REPLACE INTO imageNonce(id, nonce) VALUES (1, ${newNonce})`);
+        return 'success'
+    } catch(e) {
+        console.error(e);
+        return 'error'
+    }
+    
+}
+
+export const getImageNumber = async () => {
+    let db = await openDb();
+    try {
+        return await db.all(`SELECT * FROM imageNonce`);
+    } catch(e) {
+        
     }
 }

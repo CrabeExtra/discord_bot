@@ -1,13 +1,15 @@
-import discord, { Client, GatewayIntentBits } from 'discord.js';
+import discord, { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 
 import * as dotenv from "dotenv"
 import * as cron from 'cron';
+import fetch from "node-fetch"
+import fs from 'fs';
 
 import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
 
-import { getAllBirthdays, initialise } from './dataBaseFunctions.js';
+import { getAllBirthdays, initialise, incrementImageNumber, getImageNumber } from './dataBaseFunctions.js';
 
 //const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] });
@@ -20,13 +22,9 @@ client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
     await initialise()
     const guildId = GUILD_ID_QG; // change per server
-    // deepai.setApiKey("33f72fde-d5ea-468b-953c-a6b9c6e488e9")
-    // console.log(await deepai.callStandardApi("text2img", {
-    //     text: "mario with a doughnut"
-    // }));
 
     let guild = client.guilds.cache.get(guildId);
-
+    
     let c;
 
     if(guild) {
