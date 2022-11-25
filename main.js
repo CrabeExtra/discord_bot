@@ -53,33 +53,37 @@ client.on('ready', async () => {
 let timerBool = false;
 
 const handleReplies = async (timer, content, msg) => {
-    let contextWords = await getWords();
+    try {
+        let contextWords = await getWords();
+            
+        contextWords = contextWords.map((element) => element.words);
+
+        //console.log(contextWords);
+
+        let reply = await cleverbot(content, ["your name is butler", "My name is The Butler", "good", ...contextWords]);
+        msg.reply(reply)
+        if(!timerBool) {
+            timerBool = true;
+            timer.addEventListener('secondsUpdated', async function(e) {
+                if(timer.getTimeValues().hours === 24) {
+                    await clearWords();
+                    timer.stop();
+                    timerBool = false;
+                }
+            })
+        } 
         
-    contextWords = contextWords.map((element) => element.words);
-
-    //console.log(contextWords);
-
-    let reply = await cleverbot(content, ["your name is butler", "My name is The Butler", "good", ...contextWords]);
-    msg.reply(reply)
-    if(!timerBool) {
-        timerBool = true;
-        timer.addEventListener('secondsUpdated', async function(e) {
-            if(timer.getTimeValues().hours === 24) {
-                await clearWords();
-                timer.stop();
-                timerBool = false;
-            }
-        })
-    } 
-    
-    await addWords(content);
-    await addWords(reply);
+        await addWords(content);
+        await addWords(reply);
+    } catch(e) {
+        console.error(e);
+    }
 }
 
 client.on('messageCreate', (msg) => {
     const content = msg.content;
     //console.log(msg);
-    if(content.toLowerCase().includes("butler")) {
+    if(content.toLowerCase().includes("butler") && msg.member.user.id != "1043463849371770920") {
         let timer = new Timer();
         timer.reset();
         timer.start();
