@@ -12,6 +12,7 @@ export const initialise = async () => {
     let db = await openDb();
     await db.run("CREATE TABLE IF NOT EXISTS birthdays(id TEXT PRIMARY KEY, username TEXT, day TEXT, month TEXT, year TEXT)");
     await db.run("CREATE TABLE IF NOT EXISTS imageNonce(id TEXT PRIMARY KEY, nonce)");
+    await db.run("CREATE TABLE IF NOT EXISTS context(words)");
 }
 
 
@@ -89,6 +90,38 @@ export const getImageNumber = async () => {
     try {
         return await db.all(`SELECT * FROM imageNonce`);
     } catch(e) {
-        
+        console.error(e);
+        return 'error'
     }
+}
+
+export const addWords = async (words) => {
+    let db = await openDb();
+    try {
+        await db.run(`INSERT INTO context(words) VALUES (:words)`, { ":words": words})
+    } catch(e) {
+        console.error(e);
+        return 'error'
+    }
+}
+
+export const getWords = async () => {
+    let db = await openDb();
+    try {
+        return await db.all(`SELECT words FROM context`)
+    } catch(e) {
+        console.error(e);
+        return 'error'
+    }
+}
+
+export const clearWords = async() => {
+    let db = await openDb();
+    try {
+        await db.run("DROP TABLE context");
+        await db.run("CREATE TABLE IF NOT EXISTS context(words)");
+    } catch(e) {
+        console.error(e);
+    }
+    
 }
