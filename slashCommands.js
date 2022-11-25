@@ -69,10 +69,10 @@ export const handleSlashCommands = async (interaction) => {
         break;
         case "draw_picture":
             let description = interaction.options.getString("description");
-            // interaction.reply({
-            //     content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
-            //     ephemeral: true
-            // });
+            interaction.reply({
+                content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
+                ephemeral: true
+            });
             try {
                 const response = await openai.createImage({
                     prompt: description,
