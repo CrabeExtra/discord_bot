@@ -4,12 +4,14 @@ import * as dotenv from "dotenv"
 import * as cron from 'cron';
 import fetch from "node-fetch"
 import fs from 'fs';
+import cleverbot from 'cleverbot-free';
 
 import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
+import {Timer} from "easytimer.js";
 
-import { getAllBirthdays, initialise, incrementImageNumber, getImageNumber } from './dataBaseFunctions.js';
+import { getAllBirthdays, initialise, incrementImageNumber, getImageNumber, addWords, getWords, clearWords } from './dataBaseFunctions.js';
 
 //const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] });
@@ -48,11 +50,41 @@ client.on('ready', async () => {
 
 });
 
+let timerBool = false;
+
+const handleReplies = async (timer, content, msg) => {
+    let contextWords = await getWords();
+        
+    contextWords = contextWords.map((element) => element.words);
+
+    //console.log(contextWords);
+
+    let reply = await cleverbot(content, ["your name is butler", "My name is The Butler", "good", ...contextWords]);
+    msg.reply(reply)
+    if(!timerBool) {
+        timerBool = true;
+        timer.addEventListener('secondsUpdated', async function(e) {
+            if(timer.getTimeValues().hours === 24) {
+                await clearWords();
+                timer.stop();
+                timerBool = false;
+            }
+        })
+    } 
+    
+    await addWords(content);
+    await addWords(reply);
+}
+
 client.on('messageCreate', (msg) => {
     const content = msg.content;
     //console.log(msg);
     if(content.toLowerCase().includes("butler")) {
-        msg.reply('Gday cunt');
+        let timer = new Timer();
+        timer.reset();
+        timer.start();
+        
+        handleReplies(timer, content, msg)
     }
 });
 
