@@ -83,8 +83,6 @@ export const handleSlashCommands = async (interaction) => {
                 let imageUrl = response.data.data[0].url;
 
                 let fileName = `image_${(await getImageNumber())[0].nonce}`
-    
-                console.log(fileName);
 
                 let res = await fetch(imageUrl);
                     

@@ -69,7 +69,13 @@ export const incrementImageNumber = async () => {
     let db = await openDb();
     try {
         let newNonce = (await getImageNumber())[0].nonce + 1;
-        await db.run(`INSERT OR REPLACE INTO imageNonce(id, nonce) VALUES (1, ${newNonce})`);
+
+        if(newNonce <= 100) {
+            await db.run(`INSERT OR REPLACE INTO imageNonce(id, nonce) VALUES (1, ${newNonce})`);
+        } else {
+            await db.run(`INSERT OR REPLACE INTO imageNonce(id, nonce) VALUES (1, ${1})`)
+        }
+        
         return 'success'
     } catch(e) {
         console.error(e);
