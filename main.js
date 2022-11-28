@@ -84,11 +84,17 @@ client.on('messageCreate', (msg) => {
     const content = msg.content;
     //console.log(msg);
     if(content.toLowerCase().includes("butler") && msg.member.user.id != "1043463849371770920") {
+        var searchMask = "butler";
+        var regEx = new RegExp(searchMask, "i");
+        var replaceMask = "";
+        
+        const newContent = content.replace(regEx,replaceMask).replace(/\s+/g, ' ').trim(); 
+        //console.log(newContent)
         let timer = new Timer();
         timer.reset();
         timer.start();
         
-        handleReplies(timer, content, msg)
+        handleReplies(timer, newContent, msg)
     }
 });
 
