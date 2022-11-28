@@ -1,5 +1,5 @@
 .env
 
-birthdays.sqlite
+birthdays.db
 
 /node_modules
