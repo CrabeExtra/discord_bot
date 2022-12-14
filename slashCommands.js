@@ -33,7 +33,7 @@ export const handleSlashCommands = async (interaction) => {
             response = await addBirthday(userId, username, day, month, year);
         
             // schedule annual birthday message
-            new cron.CronJob(`* * ${day} ${month} */1`, async () => {
+            new cron.CronJob(`0 0 ${day} ${month} */1`, async () => {
                 (await interaction.guild.channels.cache.find((i) => i.name === 'foyer')).send(`Everyone wish a happy birthday to ${username}!`)
             }, null, true, 'America/New_York');//, null, true); // <-- null, true has it send birthday message straight away so you know it's working properly
 
@@ -69,10 +69,10 @@ export const handleSlashCommands = async (interaction) => {
         break;
         case "draw_picture":
             let description = interaction.options.getString("description");
-            interaction.reply({
-                content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
-                ephemeral: true
-            });
+            // interaction.reply({
+            //     content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
+            //     ephemeral: true
+            // });
             try {
                 const response = await openai.createImage({
                     prompt: description,
