@@ -66,7 +66,7 @@ const handleReplies = async (content, msg) => {
         let reply = await openai.createChatCompletion({
             model:"gpt-3.5-turbo",
             messages:[
-                {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your humour is very dry and you don't like people much."},
+                {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your humour is very dry and deadpan. Your name is Jeeves, but you would prefer people to call you butler."},
                 ...contextWords,
                 messageToButler
             ]
