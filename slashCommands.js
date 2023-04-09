@@ -1,4 +1,4 @@
-import { addBirthday, deleteBirthday, getBirthday, incrementImageNumber, getImageNumber } from "./dataBaseFunctions.js";
+import { addBirthday, deleteBirthday, getBirthday, incrementImageNumber, getImageNumber, clearWords } from "./dataBaseFunctions.js";
 import * as cron from 'cron';
 import * as dotenv from "dotenv"
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
@@ -33,7 +33,7 @@ export const handleSlashCommands = async (interaction) => {
             response = await addBirthday(userId, username, day, month, year);
         
             // schedule annual birthday message
-            new cron.CronJob(`0 0 ${day} ${month} */1`, async () => {
+            new cron.CronJob(`0 0 ${day-1} ${month-1} */1`, async () => {
                 (await interaction.guild.channels.cache.find((i) => i.name === 'foyer')).send(`Everyone wish a happy birthday to ${username}!`)
             }, null, true, 'America/New_York');//, null, true); // <-- null, true has it send birthday message straight away so you know it's working properly
 
@@ -99,6 +99,21 @@ export const handleSlashCommands = async (interaction) => {
             }
             
 
+        break;
+        case "reset_context":
+            try {
+                clearWords();
+                interaction.reply({
+                    content: `Context reset successfully, I will now converse as though it was the first time we have spoken.`,
+                    ephemeral: true
+                });
+            } catch(e) {
+                console.log(e);
+                interaction.reply({
+                    content: `There has been an error, please try again or contact Jude.`,
+                    ephemeral: true
+                });
+            }
         break;
         case "delete_birthday": 
             response = await deleteBirthday(userId);

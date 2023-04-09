@@ -19,7 +19,7 @@ export const initialise = async () => {
 export const addBirthday = async (userId, username, day, month, year) => {
     let db = await openDb();
     try {
-        if(day > 31 || day < 0 || month > 12 || month < 0) {
+        if(day > 31 || day <= 0 || month > 12 || month <= 0) {
             return 'error'
         } else {
             await db.run(`INSERT OR REPLACE INTO birthdays(id, username, day, month, year) VALUES (:id, :username, :day, :month, :year)`, { ':id': userId, ':username': username, ':day': day, ':month': month, ":year": year});
