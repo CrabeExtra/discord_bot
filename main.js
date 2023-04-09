@@ -59,7 +59,7 @@ const handleReplies = async (content, msg) => {
         let contextWords = await getWords();
         let messageToButler = {"role": "user", "content": content};
 
-        contextWords = contextWords.map((element) => element.words);
+        contextWords = contextWords.map((element) => JSON.parse(element.words));
         
         console.log(contextWords);
 
