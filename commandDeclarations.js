@@ -40,6 +40,10 @@ export const commands = [
         ]
     },
     {
+        name: "reset_context",
+        description: "Resets butler's conversation context.",
+    },
+    {
         name: "birthday",
         description: "see what birthday has been logged by the butler"
     },

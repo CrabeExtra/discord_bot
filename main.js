@@ -5,20 +5,24 @@ import * as cron from 'cron';
 import fetch from "node-fetch"
 import fs from 'fs';
 import cleverbot from 'cleverbot-free';
-
+import { Configuration, OpenAIApi } from 'openai';
 import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
-import {Timer} from "easytimer.js";
 
 import { getAllBirthdays, initialise, incrementImageNumber, getImageNumber, addWords, getWords, clearWords } from './dataBaseFunctions.js';
+
 
 //const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] });
 
-let {BOT_TOKEN, GUILD_ID_QG} = dotenv.config().parsed; 
+let {BOT_TOKEN, GUILD_ID_QG, OPEN_AI_KEY} = dotenv.config().parsed; 
 
-//initialise();
+const configuration = new Configuration({
+    apiKey: OPEN_AI_KEY,
+});
+
+const openai = new OpenAIApi(configuration);
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
@@ -43,38 +47,35 @@ client.on('ready', async () => {
     let birthdays = (await getAllBirthdays());
     
     birthdays.forEach((birthday) => {
-        new cron.CronJob(`0 0 ${birthday.day} ${birthday.month} */1`, async () => {
+        new cron.CronJob(`0 0 ${birthday.day - 1} ${birthday.month - 1} */1`, async () => {
             guild.channels.cache.find((i) => i.name === 'foyer').send(`Everyone wish a happy birthday to ${birthday.username}!`)
         }, null, true, 'America/New_York');//, null, true); // <-- null, true has it send birthday message straight away so you know it's working properly
     })
 
 });
 
-let timerBool = false;
-
-const handleReplies = async (timer, content, msg) => {
+const handleReplies = async (content, msg) => {
     try {
         let contextWords = await getWords();
-            
+        let messageToButler = {"role": "user", "content": content};
+
         contextWords = contextWords.map((element) => element.words);
-
-        //console.log(contextWords);
-
-        let reply = await cleverbot(content, ["your name is butler", "My name is The Butler", "good", ...contextWords]);
-        msg.reply(reply)
-        if(!timerBool) {
-            timerBool = true;
-            timer.addEventListener('secondsUpdated', async function(e) {
-                if(timer.getTimeValues().hours === 24) {
-                    await clearWords();
-                    timer.stop();
-                    timerBool = false;
-                }
-            })
-        } 
         
-        await addWords(content);
-        await addWords(reply);
+        console.log(contextWords);
+
+        let reply = await openai.createChatCompletion({
+            model:"gpt-3.5-turbo",
+            messages:[
+                {"role": "system", "content": "You are a helpful butler at a fancy saloon. Make as many jokes as possible and speak casually."},
+                ...contextWords,
+                messageToButler
+            ]
+        });
+        console.log(reply)
+        msg.reply(reply.data.choices[0].message.content);
+        
+        await addWords(JSON.stringify(messageToButler));
+        await addWords(JSON.stringify(reply.choices[0].message));
     } catch(e) {
         console.error(e);
     }
@@ -90,11 +91,8 @@ client.on('messageCreate', (msg) => {
         
         const newContent = content.replace(regEx,replaceMask).replace(/\s+/g, ' ').trim(); 
         //console.log(newContent)
-        let timer = new Timer();
-        timer.reset();
-        timer.start();
         
-        handleReplies(timer, newContent, msg)
+        handleReplies(newContent, msg)
     }
 });
 
@@ -106,6 +104,6 @@ client.on("guildMemberAdd", async (member) => {
     member.roles.add('1043459158567026748');
 });
 
-client.on("interactionCreate", (interaction) => handleSlashCommands(interaction))
+client.on("interactionCreate", (interaction) => handleSlashCommands(interaction));
 
 client.login(BOT_TOKEN);
