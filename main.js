@@ -5,7 +5,7 @@ import * as cron from 'cron';
 import fetch from "node-fetch"
 import fs from 'fs';
 import cleverbot from 'cleverbot-free';
-import { Configuration, OpenAIApi } from 'openai';
+import openai, { Configuration, OpenAIApi } from 'openai';
 import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
@@ -18,11 +18,12 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 let {BOT_TOKEN, GUILD_ID_QG, OPEN_AI_KEY} = dotenv.config().parsed; 
 
-const configuration = new Configuration({
-    apiKey: OPEN_AI_KEY,
-});
+// const configuration = new Configuration({
+//     apiKey: OPEN_AI_KEY,
+// });
 
-const openai = new OpenAIApi(configuration);
+// const openai = new OpenAIApi(configuration);
+openai.api_key = OPEN_AI_KEY;
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
@@ -63,7 +64,7 @@ const handleReplies = async (content, msg) => {
         
         console.log(contextWords);
 
-        let reply = await openai.createChatCompletion({
+        let reply = await openai.ChatCompletion({
             model:"gpt-4-32k",
             messages:[
                 {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your humour is very dry and deadpan. Your name is Jeeves, but you would prefer people to call you butler."},
