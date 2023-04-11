@@ -5,7 +5,7 @@ import * as cron from 'cron';
 import fetch from "node-fetch"
 import fs from 'fs';
 import cleverbot from 'cleverbot-free';
-import openai, { Configuration, OpenAIApi } from 'openai';
+import { Configuration, OpenAIApi } from 'openai';
 import { handleSlashCommands } from './slashCommands.js';
 
 import { commands } from './commandDeclarations.js';
@@ -18,12 +18,11 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 let {BOT_TOKEN, GUILD_ID_QG, OPEN_AI_KEY} = dotenv.config().parsed; 
 
-// const configuration = new Configuration({
-//     apiKey: OPEN_AI_KEY,
-// });
+const configuration = new Configuration({
+    apiKey: OPEN_AI_KEY,
+});
 
-// const openai = new OpenAIApi(configuration);
-openai.api_key = OPEN_AI_KEY;
+const openai = new OpenAIApi(configuration);
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
@@ -60,20 +59,48 @@ const handleReplies = async (content, msg) => {
         let contextWords = await getWords();
         let messageToButler = {"role": "user", "content": content};
 
-        contextWords = contextWords.map((element) => JSON.parse(element.words));
-        
-        console.log(contextWords);
+        let totalContextLength = 0;
 
-        let reply = await openai.ChatCompletion({
-            model:"gpt-4-32k",
+        contextWords = contextWords.map((element) => {
+            totalContextLength += element.words.length;
+            return JSON.parse(element.words); 
+        });
+        
+        console.log(totalContextLength);
+
+        if(totalContextLength > 3900) {
+            msg.reply("Just cleaning up old memory to avoid memory then I will reply...");
+            await clearWords();
+            for(let i = 0; i < contextWords.length; i++){
+                await addWords(JSON.stringify(contextWords[i]));
+            }
+        }
+
+        let reply = await openai.createChatCompletion({
+            model:"gpt-3.5-turbo",
             messages:[
                 {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your humour is very dry and deadpan. Your name is Jeeves, but you would prefer people to call you butler."},
                 ...contextWords,
                 messageToButler
             ]
         });
+
+        let replyContent = reply.data.choices[0].message.content;
+        let replyLength = replyContent.length;
+
+        if(replyLength >= 2000) {
+            let divisions = Math.ceil(replyLength/1998);
+            for (let i = 0; i < divisions; i++) {
+                let startIndex = i*1998;
+                let endIndex = startIndex + 1998;
+
+                msg.reply(msg.replyContent.slice(startIndex, endIndex));
+            }
+        } else {
+            msg.reply(replyContent);
+        }
         
-        msg.reply(reply.data.choices[0].message.content);
+        
 
         await addWords(JSON.stringify(messageToButler));
         await addWords(JSON.stringify(reply.data.choices[0].message));
