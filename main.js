@@ -69,7 +69,7 @@ const handleReplies = async (content, msg) => {
         console.log(totalContextLength);
 
         if(totalContextLength > 3900) {
-            msg.reply("Just cleaning up old memory to avoid memory then I will reply...");
+            msg.reply("Just cleaning up old memory to optimise performance then I will reply...");
             await clearWords();
             for(let i = 0; i < contextWords.length; i++){
                 await addWords(JSON.stringify(contextWords[i]));
@@ -94,7 +94,7 @@ const handleReplies = async (content, msg) => {
                 let startIndex = i*1998;
                 let endIndex = startIndex + 1998;
 
-                msg.reply(msg.replyContent.slice(startIndex, endIndex));
+                msg.reply(replyContent.slice(startIndex, endIndex));
             }
         } else {
             msg.reply(replyContent);
