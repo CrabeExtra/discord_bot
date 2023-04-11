@@ -1,4 +1,4 @@
-import { addBirthday, deleteBirthday, getBirthday, incrementImageNumber, getImageNumber, clearWords } from "./dataBaseFunctions.js";
+import { addBirthday, deleteBirthday, getBirthday, incrementImageNumber, getImageNumber, clearWords, getWords } from "./dataBaseFunctions.js";
 import * as cron from 'cron';
 import * as dotenv from "dotenv"
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
