@@ -67,11 +67,11 @@ const handleReplies = async (content, msg) => {
         });
         
         console.log(totalContextLength);
-
+        console.log(contextWords[contextWords.length - 1])
         if(totalContextLength > 3900) {
             msg.reply("Just cleaning up old memory to optimise performance then I will reply...");
             await clearWords();
-            for(let i = 0; i < contextWords.length; i++){
+            for(let i = contextWords.length/2; i < contextWords.length; i++){
                 await addWords(JSON.stringify(contextWords[i]));
             }
         }
