@@ -67,13 +67,9 @@ const handleReplies = async (content, msg) => {
         });
         
         console.log(totalContextLength);
-        console.log(contextWords[contextWords.length - 1])
-        if(totalContextLength > 3900) {
-            msg.reply("Just cleaning up old memory to optimise performance then I will reply...");
-            await clearWords();
-            for(let i = contextWords.length/2; i < contextWords.length; i++){
-                await addWords(JSON.stringify(contextWords[i]));
-            }
+        
+        if(totalContextLength > 4000) {
+            msg.reply("Just letting you know you may need to begin resetting my context with the /reset_context command.");
         }
 
         let reply = await openai.createChatCompletion({
