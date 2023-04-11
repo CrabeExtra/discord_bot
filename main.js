@@ -59,23 +59,12 @@ const handleReplies = async (content, msg) => {
         let contextWords = await getWords();
         let messageToButler = {"role": "user", "content": content};
 
-        let totalContextLength = 0;
-
-        contextWords = contextWords.map((element) => {
-            totalContextLength += element.words ? element.words.length: 0;
-            return JSON.parse(element.words); 
-        });
-        
-        console.log(totalContextLength);
-        
-        if(totalContextLength > 4000) {
-            msg.reply("Just letting you know you may need to begin resetting my context with the /reset_context command.");
-        }
+        contextWords = contextWords.map((element) => JSON.parse(element.words));
 
         let reply = await openai.createChatCompletion({
             model:"gpt-3.5-turbo",
             messages:[
-                {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your humour is very dry and deadpan. Your name is Jeeves, but you would prefer people to call you butler."},
+                {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your name is Jeeves. Speak casually, not professionally, and stay in character."},
                 ...contextWords,
                 messageToButler
             ]

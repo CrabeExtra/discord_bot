@@ -44,6 +44,10 @@ export const commands = [
         description: "Resets butler's conversation context.",
     },
     {
+        name: "context_length",
+        description: "Get length of context in characters."
+    },
+    {
         name: "birthday",
         description: "see what birthday has been logged by the butler"
     },

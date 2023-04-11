@@ -115,6 +115,29 @@ export const handleSlashCommands = async (interaction) => {
                 });
             }
         break;
+        case "context_length":
+            try {
+                let contextWords = await getWords();
+
+                let totalContextLength = 0;
+
+                contextWords = contextWords.map((element) => {
+                    totalContextLength += element.words ? element.words.length : 0;
+                });
+
+                interaction.reply({
+                    content: `Number of characters in context: ${totalContextLength}`,
+                    ephemeral: true
+                });
+
+            } catch(e) {
+                console.log(e);
+                interaction.reply({
+                    content: `There has been an error, please try again or contact Jude.`,
+                    ephemeral: true
+                });
+            }
+        break;
         case "delete_birthday": 
             response = await deleteBirthday(userId);
             interaction.reply({
