@@ -62,7 +62,7 @@ const handleReplies = async (content, msg) => {
         let totalContextLength = 0;
 
         contextWords = contextWords.map((element) => {
-            totalContextLength += element.words.length;
+            totalContextLength += element.words ? element.words.length: 0;
             return JSON.parse(element.words); 
         });
         
