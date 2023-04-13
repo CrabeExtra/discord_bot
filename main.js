@@ -110,11 +110,16 @@ client.on('messageCreate', (msg) => {
 });
 
 client.on("guildMemberAdd", async (member) => {
-    const guildId = GUILD_ID_QG; // change per server
-    let guild = client.guilds.cache.get(guildId);
-    await guild.channels.cache.find((i) => i.name === 'welcome').send(`Good day ${member.user.username}. Would you like some tea and biscuits?`);
+    try {
+        const guildId = GUILD_ID_QG; // change per server
+        let guild = client.guilds.cache.get(guildId);
+        await guild.channels.cache.find((i) => i.name === 'welcome').send(`Good day ${member.user.username}. Would you like some tea and biscuits?`);
+        
+        member.roles.add('1043459158567026748');
+    } catch(e) {
+        console.error(e);
+    }
     
-    member.roles.add('1043459158567026748');
 });
 
 client.on("interactionCreate", (interaction) => handleSlashCommands(interaction));
