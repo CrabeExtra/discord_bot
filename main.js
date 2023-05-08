@@ -78,15 +78,22 @@ const handleReplies = async (content, msg) => {
             for (let i = 0; i < divisions; i++) {
                 let startIndex = i*1998;
                 let endIndex = startIndex + 1998;
-
-                msg.reply(replyContent.slice(startIndex, endIndex));
+                try {
+                    msg.reply(replyContent.slice(startIndex, endIndex));
+                } catch(e) {
+                    console.log(e)
+                }
+                
             }
         } else {
-            msg.reply(replyContent);
+            try {
+                msg.reply(replyContent);
+            } catch(e) {
+                console.log(e);
+            }
+            
         }
         
-        
-
         await addWords(JSON.stringify(messageToButler));
         await addWords(JSON.stringify(reply.data.choices[0].message));
     } catch(e) {
@@ -112,7 +119,9 @@ client.on('messageCreate', (msg) => {
 client.on("guildMemberAdd", async (member) => {
     try {
         const guildId = GUILD_ID_QG; // change per server
+        
         let guild = client.guilds.cache.get(guildId);
+
         await guild.channels.cache.find((i) => i.name === 'welcome').send(`Good day ${member.user.username}. Would you like some tea and biscuits?`);
         
         member.roles.add('1043459158567026748');
