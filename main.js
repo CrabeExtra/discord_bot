@@ -79,11 +79,11 @@ const handleReplies = async (content, msg) => {
                 let startIndex = i*1998;
                 let endIndex = startIndex + 1998;
                 
-                msg.reply(replyContent.slice(startIndex, endIndex));
+                await msg.reply(replyContent.slice(startIndex, endIndex));
                 
             }
         } else {
-            msg.reply(replyContent);
+            await msg.reply(replyContent).then;
             
         }
         await addWords(JSON.stringify(messageToButler));
