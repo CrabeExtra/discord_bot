@@ -54,6 +54,14 @@ client.on('ready', async () => {
 
 });
 
+const sendReply = (content, msg) async => {
+    try {
+        await msg.reply(content)
+    } catch(e) {
+        console.log(e)
+    }
+}
+
 const handleReplies = async (content, msg) => {
     try {
         let contextWords = await getWords();
@@ -79,11 +87,11 @@ const handleReplies = async (content, msg) => {
                 let startIndex = i*1998;
                 let endIndex = startIndex + 1998;
                 
-                await msg.reply(replyContent.slice(startIndex, endIndex));
+                sendReply(replyContent.slice(startIndex, endIndex), msg);
                 
             }
         } else {
-            await msg.reply(replyContent).then;
+            sendReply(replyContent, msg);
             
         }
         await addWords(JSON.stringify(messageToButler));
