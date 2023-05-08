@@ -54,7 +54,7 @@ client.on('ready', async () => {
 
 });
 
-const sendReply = (content, msg) async => {
+const sendReply = async (content, msg) => {
     try {
         await msg.reply(content)
     } catch(e) {
