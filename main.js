@@ -78,26 +78,18 @@ const handleReplies = async (content, msg) => {
             for (let i = 0; i < divisions; i++) {
                 let startIndex = i*1998;
                 let endIndex = startIndex + 1998;
-                try {
-                    msg.reply(replyContent.slice(startIndex, endIndex));
-                } catch(e) {
-                    console.log(e)
-                }
+                
+                msg.reply(replyContent.slice(startIndex, endIndex));
                 
             }
         } else {
-            try {
-                msg.reply(replyContent);
-            } catch(e) {
-                console.log(e);
-            }
+            msg.reply(replyContent);
             
         }
-        
         await addWords(JSON.stringify(messageToButler));
         await addWords(JSON.stringify(reply.data.choices[0].message));
     } catch(e) {
-        console.error(e);
+        console.log(e);
     }
 }
 
@@ -126,7 +118,7 @@ client.on("guildMemberAdd", async (member) => {
         
         member.roles.add('1043459158567026748');
     } catch(e) {
-        console.error(e);
+        console.log(e);
     }
     
 });
