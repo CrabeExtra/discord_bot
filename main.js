@@ -70,9 +70,9 @@ const handleReplies = async (content, msg) => {
         contextWords = contextWords.map((element) => JSON.parse(element.words));
 
         let reply = await openai.createChatCompletion({
-            model:"gpt-3.5-turbo",
+            model:"gpt-4",
             messages:[
-                {"role": "system", "content": "You are a helpful butler at a fancy saloon. Your name is Jeeves. Speak casually, not professionally, and stay in character."},
+                {"role": "system", "content": "You are a helpful robotic butler at a fancy saloon. You were created by a man named Jude. Your name is Jeeves. Speak casually, not professionally, and stay in character."},
                 ...contextWords,
                 messageToButler
             ]
@@ -131,6 +131,24 @@ client.on("guildMemberAdd", async (member) => {
     
 });
 
-client.on("interactionCreate", (interaction) => handleSlashCommands(interaction));
+client.on("interactionCreate", (interaction) => {
+    const guildId = GUILD_ID_QG; // change per server
+    let guild = client.guilds.cache.get(guildId);
+    guild.commands.fetch(interaction.commandId) // id of your command
+      .then( (command) => {
+    console.log(`Fetched command ${command.name}`)
+    // further delete it like so:
+    command.delete()
+    console.log(`Deleted command ${command.name}`)
+    }).catch(console.error);
+
+    client.application?.commands.fetch(interaction.commandId) // id of your command
+      .then( (command) => {
+    console.log(`Fetched command ${command.name}`)
+    // further delete it like so:
+    command.delete()
+    console.log(`Deleted command ${command.name}`)
+    }).catch(console.error);
+})//handleSlashCommands(interaction));
 
 client.login(BOT_TOKEN);
