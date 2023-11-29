@@ -48,7 +48,17 @@ client.on('ready', async () => {
     
     birthdays.forEach((birthday) => {
         new cron.CronJob(`0 0 ${birthday.day - 1} ${birthday.month - 1} */1`, async () => {
-            guild.channels.cache.find((i) => i.name === 'foyer').send(`Everyone wish a happy birthday to ${birthday.username}!`)
+            try {
+                if(guild) {
+                    guild.channels.cache.find((i) => i.name === 'foyer').send(`Everyone wish a happy birthday to ${birthday.username}!`)
+                } else {
+                    client.application?.channels.cache.find((i) => i.name === 'foyer').send(`Everyone wish a happy birthday to ${birthday.username}!`)
+                }
+                
+            } catch(e) {
+                console.error(e);
+            }
+            
         }, null, true, 'America/New_York');//, null, true); // <-- null, true has it send birthday message straight away so you know it's working properly
     })
 
