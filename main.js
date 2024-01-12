@@ -16,7 +16,7 @@ import { getAllBirthdays, initialise, incrementImageNumber, getImageNumber, addW
 //const client = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_TYPING", "GUILD_MEMBERS"] });
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent] });
 
-let {BOT_TOKEN, GUILD_ID_QG, OPEN_AI_KEY} = dotenv.config().parsed; 
+let {BOT_TOKEN, GUILD_ID_QG, OPEN_AI_KEY} = dotenv.config().parsed;
 
 const configuration = new Configuration({
     apiKey: OPEN_AI_KEY,
@@ -26,7 +26,7 @@ const openai = new OpenAIApi(configuration);
 
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
-    await initialise()
+    await initialise();
     const guildId = GUILD_ID_QG; // change per server
 
     let guild = client.guilds.cache.get(guildId);
