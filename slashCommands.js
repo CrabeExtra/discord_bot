@@ -75,6 +75,8 @@ export const handleSlashCommands = async (interaction) => {
             });
             try {
                 const response = await openai.createImage({
+                    quality: "hd",
+                    model: "dall-e-3",
                     prompt: description,
                     n: 1,
                     size: "1024x1024",
