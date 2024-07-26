@@ -32,17 +32,19 @@ jobs:
                 CHILD_PIDS=$(pgrep -P $PID | tr '\n' ' ')
                 echo "Looping through to kill processes..."
                 for CHILD_PID in $CHILD_PIDS; do
-                  while sudo kill -0 $CHILD_PID 2>/dev/null; do sleep 1; done
+                  sudo kill -9 $CHILD_PID
+                  wait
                   echo "C_PID $CHILD_PID killed..."
                 done
-                while sudo kill -0 $PID 2>/dev/null; do sleep 1; done
+                sudo kill -9 $PID
+                wait
                 echo "PID $PID killed..."
               done
             else
               echo "No process killed..."
             fi
             echo "sleeping..."
-            sleep 20
+
             exit 0
           EOF
       - name: Pull changes, install deps and deploy.
