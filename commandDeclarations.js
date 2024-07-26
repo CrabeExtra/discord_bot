@@ -36,6 +36,12 @@ export const commands = [
                 description: "What do you want the Butler to paint?",
                 required: true,
                 type: 3
+            },
+            {
+                name: "photo-realistic",
+                description: "Do you want the painting to be photo-realistic?",
+                required: false,
+                type: 5
             }
         ]
     },
