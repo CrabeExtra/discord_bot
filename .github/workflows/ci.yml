@@ -25,16 +25,15 @@ jobs:
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
             PIDS=$(pgrep -f 'yarn start|yarn.js start' | tr '\n' ' ')
-            echo "Found PIDs: '$PIDS'"
-            if [ -n "$PIDS" ]; then
-              echo "Killing process(es) $PIDS"
-              echo $PIDS | xargs sudo kill -9
+            echo "Found PIDs: '\$PIDS'"
+            if [ -n "\$PIDS" ]; then
+              echo "Killing process(es) \$PIDS"
+              echo \$PIDS | xargs sudo kill -9
             else
               echo "No process killed..."
             fi
             exit 0
           EOF
-          true
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
@@ -46,5 +45,4 @@ jobs:
             disown 
             exit 0
           EOF
-          true
 
