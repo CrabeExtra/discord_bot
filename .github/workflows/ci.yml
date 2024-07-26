@@ -37,7 +37,7 @@ jobs:
                 sudo kill $PID
               done
             else
-              echo "No process killed..."
+              echo "No process killed...."
             fi
             echo "Check remaining processes:"
             ps aux | grep '[y]arn|main.js'
