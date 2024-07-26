@@ -34,7 +34,7 @@ jobs:
                 for CHILD_PID in $CHILD_PIDS; do
                   sudo kill -9 $CHILD_PID
                   wait
-                  echo "C_PID $CHILD_PID killed..."
+                  echo "C_PID $CHILD_PID killed.."
                 done
                 sudo kill -9 $PID
                 wait
