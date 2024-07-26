@@ -17,7 +17,5 @@ jobs:
           ssh-private-key: ${{ secrets.BUTLER_ORACLE_SSH }}
           run: |
                 sudo ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215
-                git pull
-                yarn
-                sudo nohup yarn start & 
-                disown
+      - name: pull repo
+        run: git pull
