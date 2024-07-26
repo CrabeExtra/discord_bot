@@ -25,7 +25,7 @@ jobs:
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
             PIDS=$(pgrep -f 'yarn start|yarn.js start' | tr '\n' ' ')
-            echo "Found PIDs: $PIDS"
+            echo "Found PID(S): $PIDS"
             if [ -n "$PIDS" ]; then
               for PID in $PIDS; do
                 echo "Killing process $PID"
