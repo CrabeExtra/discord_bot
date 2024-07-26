@@ -23,9 +23,9 @@ jobs:
       - name: SSH to location and deploy
         timeout-minutes: 1
         run: |
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 "
-          cd ~ ;
-          git pull ;
-          yarn ;
-          yarn start ;
+          ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
+          cd ~ 
+          git pull 
+          yarn 
+          yarn start 
 
