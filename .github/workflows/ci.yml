@@ -19,6 +19,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.BUTLER_ORACLE_SSH }}
       - name: Deploy to Oracle Cloud
-        run: ssh -o StrictHostKeyChecking=no ubuntu@<152.69.160.215> << 'EOF'
-        run: git pull
-        run: yarn start
+        run: 
+          ssh -o StrictHostKeyChecking=no ubuntu@<152.69.160.215> << 'EOF'
+          git pull
+          yarn start
