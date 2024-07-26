@@ -19,3 +19,4 @@ jobs:
             sudo ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215
             git pull
             yarn
+            yarn start
