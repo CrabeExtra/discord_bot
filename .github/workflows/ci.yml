@@ -23,20 +23,20 @@ jobs:
       - name: Kill Previous Process
         timeout-minutes: 1
         run: |
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
+          ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
             PID=$(pgrep -f 'yarn start')
             ps -ef|grep yarn
             if [ -n "$PID" ]; then
-            echo "Killing process(es) $PID"
-            kill -9 $PID
+              echo "Killing process(es) $PID"
+              kill -9 $PID
             else
-            echo "No process killed..."
+              echo "No process killed..."
             fi
           EOF
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
+          ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
             cd ~ 
             git pull 
             yarn 
