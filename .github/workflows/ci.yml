@@ -28,7 +28,7 @@ jobs:
             echo "Found PIDs: '$PIDS'"
             if [ -n "$PIDS" ]; then
               echo "Killing process(es) $PIDS"
-              sudo $PIDS | xargs kill -9
+              sudo echo $PIDS | xargs kill -9
             else
               echo "No process killed..."
             fi
