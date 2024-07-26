@@ -33,11 +33,11 @@ jobs:
                 echo "Looping through to kill processes..."
                 for CHILD_PID in $CHILD_PIDS; do
                   sudo kill -9 $CHILD_PID
-                  wait
+                  while ps -p $CHILD_PID; do sleep 1;done;
                   echo "C_PID $CHILD_PID killed.."
                 done
                 sudo kill -9 $PID
-                wait
+                while ps -p $PID; do sleep 1;done;
                 echo "PID $PID killed..."
               done
             else
