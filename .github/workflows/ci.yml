@@ -20,12 +20,22 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H 152.69.160.215 >> ~/.ssh/known_hosts
           echo "${{ secrets.BUTLER_ORACLE_SSH }}" > ~/.ssh/id_rsa
-      - name: SSH to location and deploy
+      - name: Kill Previous Process
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
+            PID=$(ps aux | grep '[y]arn start' | awk '{print $2}')
+            if [ ! -z "$PID" ]; then
+              echo "Killing process $PID"
+              kill -9 $PID
+            fi
+          EOF
+      - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
-          cd ~ 
-          git pull 
-          yarn 
-          yarn start 
+            cd ~ 
+            git pull 
+            yarn 
+            yarn start 
+          EOF
 
