@@ -21,6 +21,7 @@ jobs:
           ssh-keyscan -H 152.69.160.215 >> ~/.ssh/known_hosts
           echo "${{ secrets.BUTLER_ORACLE_SSH }}" > ~/.ssh/id_rsa
       - name: SSH to location
+        timeout-minutes: 0.1  # Set timeout for the deployment step
         run: ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215
       - name: pull latest repository state
         run: git pull
