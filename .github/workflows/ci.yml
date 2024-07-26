@@ -26,22 +26,20 @@ jobs:
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
             PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ') &&
             echo "Found PIDs: $PIDS" &&
-            if [ -n "$PIDS" ]; then
+            if [ -n "$PIDS" ]; then &&
               echo "Killing process(es): $PIDS" &&
-              for PID in $PIDS; do
+              for PID in $PIDS; do &&
                 CHILD_PIDS=$(pgrep -P $PID | tr '\n' ' ') &&
                 echo "Looping through to kill child processes..." &&
-                for CHILD_PID in $CHILD_PIDS; do
+                for CHILD_PID in $CHILD_PIDS; do &&
                   sudo kill -9 $CHILD_PID &&
-                  while ps -p $CHILD_PID; do sleep 1; done &&
-                  echo "C_PID $CHILD_PID killed.."
+                  echo "C_PID $CHILD_PID killed.." &&
                 done &&
                 sudo kill -9 $PID &&
-                while ps -p $PID; do sleep 1; done &&
-                echo "PID $PID killed..."
-              done
-            else
-              echo "No process killed..."
+                echo "PID $PID killed..." &&
+              done &&
+            else &&
+              echo "No process killed..." &&
             fi &&
             wait &&
             echo "sleeping..." &&
