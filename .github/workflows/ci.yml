@@ -39,7 +39,7 @@ jobs:
                 echo "PID $PID killed..."
               done
             else
-              echo "No process killed...."
+              echo "No process killed..."
             fi
             echo "sleeping..."
             sleep 20
