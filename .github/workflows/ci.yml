@@ -24,8 +24,8 @@ jobs:
         timeout-minutes: 1
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 "
-          cd ~
-          git pull "
-          yarn "
-          yarn start "
+          cd ~ ;
+          git pull ;
+          yarn ;
+          yarn start ;
 
