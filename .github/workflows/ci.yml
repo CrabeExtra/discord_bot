@@ -36,8 +36,7 @@ jobs:
               echo "No process killed..."
             fi &&
             wait &&
-            echo "sleeping..." &&
-            sleep 5 &&
+            echo "exiting..." &&
             exit 0
           EOF
       - name: Pull changes, install deps and deploy.
