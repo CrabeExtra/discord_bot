@@ -41,7 +41,7 @@ jobs:
             fi
             printf "\nCheck remaining processes:\n"
             ps aux | grep '[y]arn|main.js'
-            exit
+            sudo exit
           EOF
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
