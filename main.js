@@ -80,7 +80,7 @@ const handleReplies = async (content, msg) => {
         contextWords = contextWords.map((element) => JSON.parse(element.words));
 
         let reply = await openai.createChatCompletion({
-            model:"gpt-4",
+            model:"gpt-4o",
             messages:[
                 {"role": "system", "content": "You are a helpful robotic butler at a fancy saloon. You were created by a man named Jude. Your name is Jeeves. Speak casually, not professionally, and stay in character."},
                 ...contextWords,
