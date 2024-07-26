@@ -39,8 +39,6 @@ jobs:
             else
               echo "No process killed...."
             fi
-            echo "Check remaining processes:"
-            ps aux | grep '[y]arn|main.js'
             sleep 5
             exit 0
           EOF
