@@ -24,6 +24,7 @@ jobs:
         timeout-minutes: 1
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
+            set -x
             PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ')
             echo "Found PIDs: $PIDS"
             if [ -n "$PIDS" ]; then
@@ -41,7 +42,7 @@ jobs:
             fi
             printf "\nCheck remaining processes:\n"
             ps aux | grep '[y]arn|main.js'
-            sudo exit
+            exit
           EOF
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
