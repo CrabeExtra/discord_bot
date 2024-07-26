@@ -15,7 +15,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.BUTLER_ORACLE_SSH }}
-          run: |
-                sudo ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215
-      - name: pull repo
-        run: git pull
+          
+      - name: SSH to location
+        run: sudo ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215
