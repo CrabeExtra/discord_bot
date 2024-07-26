@@ -23,9 +23,9 @@ jobs:
       - name: Kill Previous Process
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
-            PID=$(ps aux | grep '[y]arn start' | awk '{print $2}')
-            if [ ! -z "$PID" ]; then
-              echo "Killing process $PID"
+            PID=$(pgrep -f 'yarn start')
+            if [ -n "$PID" ]; then
+              echo "Killing process(es) $PID"
               kill -9 $PID
             else
               echo "No process killed..."
