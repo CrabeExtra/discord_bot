@@ -34,6 +34,7 @@ jobs:
             fi
             exit 0
           EOF
+          true
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
@@ -45,4 +46,5 @@ jobs:
             disown 
             exit 0
           EOF
+          true
 
