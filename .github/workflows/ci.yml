@@ -24,7 +24,6 @@ jobs:
         timeout-minutes: 1
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
-            ps -ef | grep yarn
             PIDS=$(pgrep -f 'yarn start|yarn.js start')
             if [ -n "$PID" ]; then
               echo "Killing process(es) $PID"
