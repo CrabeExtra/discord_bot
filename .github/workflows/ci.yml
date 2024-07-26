@@ -40,8 +40,8 @@ jobs:
               echo "No process killed..."
             fi
             printf "\nCheck remaining processes:\n"
-            ps aux | grep '[y]arn'
-            exit 0
+            ps aux | grep '[y]arn|main.js'
+            exit
           EOF
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
@@ -52,6 +52,6 @@ jobs:
             yarn 
             sudo nohup yarn start > output.log 2>&1 &
             disown 
-            exit 0
+            exit
           EOF
 
