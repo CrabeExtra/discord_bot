@@ -69,6 +69,7 @@ export const handleSlashCommands = async (interaction) => {
         break;
         case "draw_picture":
             let description = interaction.options.getString("description");
+            let style = interaction.options.getBoolean("photo-realistic");
             interaction.reply({
                 content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
                 ephemeral: true
@@ -80,6 +81,7 @@ export const handleSlashCommands = async (interaction) => {
                     prompt: description,
                     n: 1,
                     size: "1024x1024",
+                    style: style ? "vivid" : "natural"
                 });
                 // console.log(response);
                 let imageUrl = response.data.data[0].url;
