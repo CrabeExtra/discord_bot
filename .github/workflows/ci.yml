@@ -36,6 +36,7 @@ jobs:
             cd ~ 
             git pull 
             yarn 
-            yarn start 
+            sudo nohup yarn start &
+            disown 
           EOF
 
