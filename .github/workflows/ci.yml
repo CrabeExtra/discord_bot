@@ -24,12 +24,8 @@ jobs:
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<EOF
             PID=$(pgrep -f 'yarn start')
-            if [ -n "$PID" ]; then
-              echo "Killing process(es) $PID"
-              kill -9 $PID
-            else
-              echo "No process killed..."
-            fi
+            echo "Killing process(es) $PID"
+            kill -9 $PID || echo "No process killed..."
           EOF
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
@@ -38,7 +34,7 @@ jobs:
             cd ~ 
             git pull 
             yarn 
-            sudo nohup yarn start &
+            sudo nohup yarn start > output.log 2>&1 &
             disown 
           EOF
 
