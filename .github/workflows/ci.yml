@@ -32,10 +32,10 @@ jobs:
                 CHILD_PIDS=$(pgrep -P $PID | tr '\n' ' ')
                 echo "Looping through to kill processes..."
                 for CHILD_PID in $CHILD_PIDS; do
-                  sudo kill $CHILD_PID
+                  while sudo kill -0 $CHILD_PID 2>/dev/null; do sleep 1; done
                   echo "C_PID $CHILD_PID killed..."
                 done
-                sudo kill $PID
+                while sudo kill -0 $PID 2>/dev/null; do sleep 1; done
                 echo "PID $PID killed..."
               done
             else
