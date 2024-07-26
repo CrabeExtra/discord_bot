@@ -3,7 +3,6 @@ name: Node.js CI
 on:
   push:
     branches: [ "master" ]
-    pull_request: [ "master" ]
 
 jobs:
   build:
@@ -12,14 +11,16 @@ jobs:
       matrix:
         node-version: [19.x]
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: pull repo
+        run: git pull
+      - name: Install deps
+        run: yarn
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@master
         with:
-          ssh-private-key: ${{ secrets.BUTLER_ORACLE_SSH }}
-      - name: Deploy to Oracle Cloud
-        run: 
-          ssh -o StrictHostKeyChecking=no ubuntu@<152.69.160.215> << 'EOF'
-          git pull
-          yarn start
+          SSH_PRIVATE_KEY: ${{ secrets.BUTLER_ORACLE_SSH }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_USER: ${{ secrets.USERNAME }}
+          EXCLUDE: "/dist/, /node_modules/"
