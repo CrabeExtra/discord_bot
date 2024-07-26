@@ -24,7 +24,6 @@ jobs:
         timeout-minutes: 1
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
-            set -x
             PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ')
             echo "Found PIDs: $PIDS"
             if [ -n "$PIDS" ]; then
@@ -33,14 +32,14 @@ jobs:
                 CHILD_PIDS=$(pgrep -P $PID | tr '\n' ' ')
                 echo "Killing parent process $PID and child processes $CHILD_PIDS"
                 for CHILD_PID in $CHILD_PIDS; do
-                  sudo kill -9 $CHILD_PID
+                  sudo kill $CHILD_PID
                 done
-                sudo kill -9 $PID
+                sudo kill $PID
               done
             else
               echo "No process killed..."
             fi
-            printf "\nCheck remaining processes:\n"
+            echo "Check remaining processes:"
             ps aux | grep '[y]arn|main.js'
             exit
           EOF
