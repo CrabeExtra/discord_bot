@@ -1,0 +1,24 @@
+yaml
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      
+main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      name: Checkout Code
+          uses: actions/checkout@v2
+      name: Set up SSH
+          uses: webfactory/ssh-agent@v0.5.3
+          with:
+            ssh-private-key: ${{ secrets.BUTLER_ORACLE_SSH }}
+      name: Deploy to Oracle Cloud
+          run:
+            ssh -o StrictHostKeyChecking=no ubuntu@<152.69.160.215> << 'EOF'
+            git pull
+            yarn start
