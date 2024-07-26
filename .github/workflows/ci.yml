@@ -24,17 +24,23 @@ jobs:
         timeout-minutes: 1
         run: |
           ssh -tt -o StrictHostKeyChecking=no ubuntu@152.69.160.215 <<'EOF'
-            PIDS=$(pgrep -f 'yarn start|yarn.js start|node main.js' | tr '\n' ' ')
-            echo "Found PID(S): $PIDS"
+            PIDS=$(pgrep -f 'yarn start|yarn.js start' | tr '\n' ' ')
+            echo "Found PIDs: $PIDS"
             if [ -n "$PIDS" ]; then
+              echo "Killing process(es): $PIDS"
               for PID in $PIDS; do
-                echo "Killing process $PID"
-                sudo pkill -TERM -P $PID
+                CHILD_PIDS=$(pgrep -P $PID | tr '\n' ' ')
+                echo "Killing parent process $PID and child processes $CHILD_PIDS"
+                for CHILD_PID in $CHILD_PIDS; do
+                  sudo kill -9 $CHILD_PID
+                done
                 sudo kill -9 $PID
               done
             else
-              echo "No process killed...."
+              echo "No process killed..."
             fi
+            printf "\nCheck remaining processes:\n"
+            ps aux | grep '[y]arn'
             exit 0
           EOF
       - name: Pull changes, install deps and deploy.
