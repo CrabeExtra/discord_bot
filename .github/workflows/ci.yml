@@ -40,9 +40,7 @@ jobs:
         run: source ./ci-logic/ci-reference-functions.sh 
       - name: Kill Previous Process
         timeout-minutes: 1
-        run: |
-          source ./ci-logic/ci-reference-functions.sh
-          run_step "$SERVER_IP" "kill_prev_step.txt"
+        run: ./ci-logic/run-step.sh "$SERVER_IP" "kill_prev_step.txt"
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |

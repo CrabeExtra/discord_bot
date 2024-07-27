@@ -1,3 +1,5 @@
+# some nice functions to reduce repeated aspects of workflow while maintaining extra functionality.
+
 concatenate_commands() {
     local file=$1
     local concatenated_commands=""
