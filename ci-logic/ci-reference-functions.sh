@@ -8,7 +8,7 @@ concatenate_commands() {
         concatenated_commands+="$line\n"
     done < "$file"
 
-    echo "$concatenated_commands"
+    echo -e "$concatenated_commands"
 }
 
 run_commands() {
