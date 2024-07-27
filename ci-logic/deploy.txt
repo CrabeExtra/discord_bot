@@ -1,3 +1,5 @@
 cd ~
+echo "Deploying..."
 sudo nohup yarn start > output.log 2>&1 &
 disown 
+echo "Deployed Successfully."

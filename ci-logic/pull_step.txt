@@ -1,2 +1,4 @@
 cd ~
+echo "Retrieving new changes..."
 git pull
+echo "Repository up to date."
