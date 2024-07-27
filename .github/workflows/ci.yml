@@ -30,9 +30,10 @@ jobs:
           echo "${{ secrets.BUTLER_ORACLE_SSH }}" > ~/.ssh/id_rsa
       - name: Validate IP exists in Github
         run: |
-          echo "SERVER_IP=${{ secrets.SERVER_IP }}" >> $GITHUB_ENV
+          LOCAL_SERVER_IP=${{ secrets.SERVER_IP }}
+          echo "SERVER_IP=$LOCAL_SERVER_IP" >> $GITHUB_ENV
 
-          if [ -z "$SERVER_IP" ]; then
+          if [ -z "$LOCAL_SERVER_IP" ]; then
               echo "Error: SERVER_IP is not set."
               exit 1
           fi  
