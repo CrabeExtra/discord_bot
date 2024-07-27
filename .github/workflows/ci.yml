@@ -40,7 +40,7 @@ jobs:
         run: chmod +x ./ci-logic/run-step.sh
       - name: Kill Previous Process
         timeout-minutes: 1
-        run: ./ci-logic/run-step.sh "$SERVER_IP" "kill_prev_step.txt"
+        run: ./ci-logic/run-step.sh "$SERVER_IP" "ci-logic/kill_prev_step.txt"
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
