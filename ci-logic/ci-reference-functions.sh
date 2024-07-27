@@ -5,10 +5,10 @@ concatenate_commands() {
     local concatenated_commands=""
 
     while IFS= read -r line; do
-        concatenated_commands+="$line"
+        concatenated_commands+="$line\n"
     done < "$file"
 
-    echo "$concatenated_commands wait"
+    echo "$concatenated_commands"
 }
 
 run_commands() {
