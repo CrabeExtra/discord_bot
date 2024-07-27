@@ -35,9 +35,9 @@ jobs:
           if [ -z "$SERVER_IP" ]; then
               echo "Error: SERVER_IP is not set."
               exit 1
-          fi
-      - name: Import reference functions
-        run: source ./ci-logic/ci-reference-functions.sh 
+          fi  
+      - name: Ensure executable
+        run: chmod +x ./run_step.sh
       - name: Kill Previous Process
         timeout-minutes: 1
         run: ./ci-logic/run-step.sh "$SERVER_IP" "kill_prev_step.txt"
