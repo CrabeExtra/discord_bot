@@ -34,8 +34,10 @@ jobs:
           echo "SERVER_IP=$LOCAL_SERVER_IP" >> $GITHUB_ENV
 
           if [ -z "$LOCAL_SERVER_IP" ]; then
-              echo "Error: SERVER_IP is not set."
-              exit 1
+            echo "Error: SERVER_IP is not set."
+            exit 1
+          else
+            echo "Server IP validated successfully."
           fi  
       - name: Ensure executable
         run: chmod +x ./ci-logic/run-step.sh
