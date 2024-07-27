@@ -1,5 +1,10 @@
 name: Node.js CI
+# before I forget.. if the 'Kill previous process' task hangs due to a non-successful kill command,
+# I should swap out the &&'s for ;'s which will execute the next line despite the previous line not getting a success.
+# If that doesn't work, try (command1 &) ; (command2 &), with a wait at the end to wait for these processes.
 
+#TODO: make a function that concatenates asynchronous .sh commands by reading an array from config files (file for each name: step). 
+#      Make a function that wraps concatenated commands in SSH and EOF.
 on:
   push:
     branches: [ "master" ]
