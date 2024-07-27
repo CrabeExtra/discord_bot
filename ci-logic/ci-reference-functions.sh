@@ -17,7 +17,7 @@ run_commands() {
 
     local commands
     commands=$(concatenate_commands "$file")
-
+    echo $"ip"
     ssh -tt -o StrictHostKeyChecking=no "ubuntu@$ip"<<EOF
 $commands
 exit 0
