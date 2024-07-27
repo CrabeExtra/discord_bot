@@ -28,6 +28,7 @@ jobs:
       - name: Kill Previous Process
         timeout-minutes: 1
         run: |
+          echo ${{ secrets.HOST }}
           ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} <<'EOF'
             PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ') &&
             echo "Found PIDs: $PIDS" &&
@@ -41,7 +42,7 @@ jobs:
               echo "No process killed..."
             fi &&
             wait &&
-            echo "exiting..." &&
+            echo "exiting...." &&
             exit 0
           EOF
       - name: Pull changes, install deps and deploy.
