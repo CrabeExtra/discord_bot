@@ -1,0 +1,13 @@
+PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ') &&
+echo "Found PIDs: $PIDS" &&
+if [ -n "$PIDS" ]; then
+    echo "Killing process(es): $PIDS" &&
+    for PID in $PIDS; do
+    sudo kill -9 $PID &&
+    echo "PID $PID killed..."
+    done
+else
+    echo "No process killed..."
+fi &&
+wait &&
+echo "exiting...." &&
