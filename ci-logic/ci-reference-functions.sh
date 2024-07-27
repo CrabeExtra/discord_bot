@@ -27,5 +27,5 @@ EOF
 run_step() {
     local ip=$1
     local config_file=$2
-    run_remote_commands "$ip" "$config_file"
+    run_commands "$ip" "$config_file"
 }
