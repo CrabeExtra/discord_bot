@@ -23,14 +23,14 @@ jobs:
       - name: Add Known Hosts
         run: |
           mkdir -p ~/.ssh
-          echo ${{ secrets.HOST }}
-          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          echo ${{ secrets.SERVER_IP }}
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
           echo "${{ secrets.BUTLER_ORACLE_SSH }}" > ~/.ssh/id_rsa
       - name: Kill Previous Process
         timeout-minutes: 1
         run: |
-          echo ${{ secrets.HOST }}
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} <<'EOF'
+          echo ${{ secrets.SERVER_IP }}
+          ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} <<'EOF'
             PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ') &&
             echo "Found PIDs: $PIDS" &&
             if [ -n "$PIDS" ]; then
@@ -49,7 +49,7 @@ jobs:
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.HOST }} <<'EOF'
+          ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} <<'EOF'
             cd ~ 
             git pull 
             yarn 
