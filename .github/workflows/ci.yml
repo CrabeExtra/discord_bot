@@ -23,6 +23,7 @@ jobs:
       - name: Add Known Hosts
         run: |
           mkdir -p ~/.ssh
+          echo ${{ secrets.HOST }}
           ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
           echo "${{ secrets.BUTLER_ORACLE_SSH }}" > ~/.ssh/id_rsa
       - name: Kill Previous Process
