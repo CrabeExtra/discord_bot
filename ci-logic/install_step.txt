@@ -1,2 +1,4 @@
 cd ~
+echo "Installing dependancies..."
 yarn
+echo "Installed."
