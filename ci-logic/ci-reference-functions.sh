@@ -16,10 +16,10 @@ run_commands() {
     local commands
     commands=$(concatenate_commands "$file")
 
-    ssh -tt -o StrictHostKeyChecking=no "ubuntu@$ip" <<EOF
-        $commands
-        exit 0
-    EOF
+    ssh -tt -o StrictHostKeyChecking=no "ubuntu@$ip"<<EOF
+$commands
+exit 0
+EOF
 }
 
 run_step() {
