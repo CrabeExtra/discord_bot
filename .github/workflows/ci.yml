@@ -44,15 +44,13 @@ jobs:
       - name: Kill Previous Process
         timeout-minutes: 1
         run: ./ci-logic/run-step.sh "$SERVER_IP" "ci-logic/kill_prev_step.txt"
-      - name: Pull changes, install deps and deploy.
+      - name: Pull changes
         timeout-minutes: 1
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} <<'EOF'
-            cd ~ 
-            git pull 
-            yarn 
-            sudo nohup yarn start > output.log 2>&1 &
-            disown 
-            exit 0
-          EOF
+        run: ./ci-logic/run-step.sh "$SERVER_IP" "ci-logic/pull_step.txt"
+      - name: Install deps
+        timeout-minutes: 1
+        run: ./ci-logic/run-step.sh "$SERVER_IP" "ci-logic/install_step.txt"
+      - name: Deploy
+        timeout-minutes: 1
+        run: ./ci-logic/run-step.sh "$SERVER_IP" "ci-logic/deploy_step.txt"
 

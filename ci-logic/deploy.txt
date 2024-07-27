@@ -1,0 +1,3 @@
+cd ~
+sudo nohup yarn start > output.log 2>&1 &
+disown 
