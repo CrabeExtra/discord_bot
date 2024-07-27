@@ -5,6 +5,7 @@ name: Node.js CI
 
 #TODO: make a function that concatenates asynchronous .sh commands by reading an array from config files (file for each name: step). 
 #      Make a function that wraps concatenated commands in SSH and EOF.
+# TODO: does webfactory actually do anything? i've been manually adding my ssh key, I should try with the webfactory step removed.
 on:
   push:
     branches: [ "master" ]
@@ -16,6 +17,8 @@ jobs:
       matrix:
         node-version: [19.x]
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -23,29 +26,21 @@ jobs:
       - name: Add Known Hosts
         run: |
           mkdir -p ~/.ssh
-          echo ${{ secrets.SERVER_IP }}
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
           echo "${{ secrets.BUTLER_ORACLE_SSH }}" > ~/.ssh/id_rsa
+      - name: Validate IP exists in Github
+        run: |
+          SERVER_IP=${{ secrets.SERVER_IP }}
+
+          if [ -z "$SERVER_IP" ]; then
+              echo "Error: SERVER_IP is not set."
+              exit 1
+          fi
+      - name: Import reference functions
+        run: source ./ci-logic/ci-reference-functions.sh 
       - name: Kill Previous Process
         timeout-minutes: 1
-        run: |
-          echo ${{ secrets.SERVER_IP }}
-          ssh -tt -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} <<'EOF'
-            PIDS=$(pgrep -f 'yarn start|yarn.js start|main.js' | tr '\n' ' ') &&
-            echo "Found PIDs: $PIDS" &&
-            if [ -n "$PIDS" ]; then
-              echo "Killing process(es): $PIDS" &&
-              for PID in $PIDS; do
-                sudo kill -9 $PID &&
-                echo "PID $PID killed..."
-              done
-            else
-              echo "No process killed..."
-            fi &&
-            wait &&
-            echo "exiting...." &&
-            exit 0
-          EOF
+        run: run_step "$SERVER_IP" "kill_prev_step.txt"
       - name: Pull changes, install deps and deploy.
         timeout-minutes: 1
         run: |
