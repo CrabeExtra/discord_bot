@@ -37,9 +37,7 @@ jobs:
               exit 1
           fi
       - name: Import reference functions
-        run: |
-          ls -la ./ci-logic
-          source ./ci-logic/ci-reference_functions.sh 
+        run: source ./ci-logic/ci-reference-functions.sh 
       - name: Kill Previous Process
         timeout-minutes: 1
         run: run_step "$SERVER_IP" "kill_prev_step.txt"
