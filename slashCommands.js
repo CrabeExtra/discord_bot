@@ -9,7 +9,9 @@ import Replicate from "replicate";
 
 const { OPEN_AI_KEY, REPLICATE_BFL_KEY } = dotenv.config().parsed; 
 
-const replicate = new Replicate();
+const replicate = new Replicate({
+    auth: REPLICATE_BFL_KEY
+});
 const configuration = new Configuration({
 	apiKey: OPEN_AI_KEY,
 });
