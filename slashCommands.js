@@ -82,7 +82,17 @@ export const handleSlashCommands = async (interaction) => {
                 let response;
                 let imageUrl;
                 if(blackForestLabs) {
-                    imageUrl = await replicate.run("black-forest-labs/flux-pro", { input: { prompt: description }});
+                    imageUrl = await replicate.run("flux-pro", 
+                        { 
+                            input: 
+                            { 
+                                prompt: description,
+                                steps: 25,
+                                width: 1024,
+                                height: 1024
+                            }
+                        }
+                    );
                 } else {
                     response = await openai.createImage({
                         quality: "hd",
@@ -110,6 +120,11 @@ export const handleSlashCommands = async (interaction) => {
             } catch(e) {
                 console.log(e);
                 (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("It appears I have run into some problems creating the painting your requested good citizen.")
+                try {
+                    (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(JSON.stringify(e))
+                } catch(e2) {
+                    console.log("unable to send error to Discord.")
+                }
             }
             
 
