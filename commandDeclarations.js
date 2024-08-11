@@ -38,6 +38,12 @@ export const commands = [
                 type: 3
             },
             {
+                name: "words-in-image",
+                description: "Do you want my painting to contain any written text?",
+                required: false,
+                type: 5
+            },
+            {
                 name: "photo-realistic",
                 description: "Do you want the painting to be photo-realistic?",
                 required: false,

@@ -5,10 +5,11 @@ import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
 import { Configuration, OpenAIApi } from "openai";
 import fetch from "node-fetch"
 import fs from 'fs';
+import Replicate from "replicate";
 
+const { OPEN_AI_KEY, REPLICATE_BFL_KEY } = dotenv.config().parsed; 
 
-const { OPEN_AI_KEY } = dotenv.config().parsed; 
-
+const replicate = new Replicate();
 const configuration = new Configuration({
 	apiKey: OPEN_AI_KEY,
 });
@@ -70,22 +71,29 @@ export const handleSlashCommands = async (interaction) => {
         case "draw_picture":
             let description = interaction.options.getString("description");
             let style = interaction.options.getBoolean("photo-realistic");
+            let blackForestLabs = interaction.options.getBoolean("words-in-image");
             interaction.reply({
                 content: `I have begun creating a painting of ${description}. I will put it in the gallery when it is complete.`,
                 ephemeral: true
             });
             try {
-                const response = await openai.createImage({
-                    quality: "hd",
-                    model: "dall-e-3",
-                    prompt: description,
-                    n: 1,
-                    size: "1024x1024",
-                    style: style ? "vivid" : "natural"
-                });
-                // console.log(response);
-                let imageUrl = response.data.data[0].url;
-
+                let response;
+                let imageUrl;
+                if(blackForestLabs) {
+                    imageUrl = await replicate.run("black-forest-labs/flux-pro", { description });
+                } else {
+                    response = await openai.createImage({
+                        quality: "hd",
+                        model: "dall-e-3",
+                        prompt: description,
+                        n: 1,
+                        size: "1024x1024",
+                        style: style ? "vivid" : "natural"
+                    });
+                    // console.log(response);
+                    imageUrl = response.data.data[0].url;
+                }
+                    
                 let fileName = `image_${(await getImageNumber())[0].nonce}`
 
                 let res = await fetch(imageUrl);
