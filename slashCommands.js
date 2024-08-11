@@ -82,7 +82,7 @@ export const handleSlashCommands = async (interaction) => {
                 let response;
                 let imageUrl;
                 if(blackForestLabs) {
-                    imageUrl = await replicate.run("black-forest-labs/flux-pro", { description });
+                    imageUrl = await replicate.run("black-forest-labs/flux-pro", { prompt: description });
                 } else {
                     response = await openai.createImage({
                         quality: "hd",
