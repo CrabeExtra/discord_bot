@@ -82,8 +82,9 @@ export const handleSlashCommands = async (interaction) => {
                 let response;
                 let imageUrl;
                 if(blackForestLabs) {
-                    imageUrl = await replicate.run("black-forest-labs/flux-pro", 
+                    imageUrl = await replicate.predictions.create(
                         { 
+                            version: "black-forest-labs/flux-pro",
                             input: 
                             { 
                                 prompt: description,
