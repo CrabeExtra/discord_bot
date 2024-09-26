@@ -110,7 +110,8 @@ export const handleSlashCommands = async (interaction) => {
 
                     while(true) {
 
-                        response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
+                        response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId.replace('"', '')}`);
+                        log(taskId)
                         let jsonImgResponse = await response.json();
                         log(JSON.stringify(jsonImgResponse))
                         if(response.status === "Ready") {
