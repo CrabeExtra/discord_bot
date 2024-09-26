@@ -104,13 +104,13 @@ export const handleSlashCommands = async (interaction) => {
                     });
                     let responseJson = await response.json();
                     log(JSON.stringify(responseJson))
-                    let taskId = JSON.stringify(responseJson.id);
+                    let taskId = JSON.stringify(responseJson.id).replace('"', '');
 
                     log(taskId);
 
                     while(true) {
 
-                        response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId.replace('"', '')}`);
+                        response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
                         log(taskId)
                         let jsonImgResponse = await response.json();
                         log(JSON.stringify(jsonImgResponse))
