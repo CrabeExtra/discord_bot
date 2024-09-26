@@ -113,7 +113,7 @@ export const handleSlashCommands = async (interaction) => {
                         response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
 
                         if(response.status === "Ready") {
-                            imageUrl = response.result.sample;
+                            imageUrl = (await response.json()).result.sample;
                             break;
                         }
                         sleep(1000);
