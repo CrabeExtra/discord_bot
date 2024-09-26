@@ -5,7 +5,7 @@ import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
 import { Configuration, OpenAIApi } from "openai";
 import fetch from "node-fetch"
 import fs from 'fs';
-import { sleep } from "./helperFunctions.js";
+import { sleep, log } from "./helperFunctions.js";
 
 const fsAsync = fs.promises;
 
@@ -81,7 +81,7 @@ export const handleSlashCommands = async (interaction) => {
                 let response;
                 let imageUrl;
                 if(blackForestLabs) {
-                    console.log("Creating image based on black forest labs AI.")
+                    log("Creating image based on black forest labs AI.")
                     response = fetch('https://api.bfl.ml/v1/image', {
                         method: 'POST',
                         headers: {
@@ -105,7 +105,7 @@ export const handleSlashCommands = async (interaction) => {
 
                     let taskId = response.id;
 
-                    console.log(taskId);
+                    log(taskId);
 
                     while(true) {
 
@@ -118,7 +118,7 @@ export const handleSlashCommands = async (interaction) => {
                         sleep(1000);
                     }
                 } else {
-                    console.log("Creating image based on openAI GPT.")
+                    log("Creating image based on openAI GPT.")
                     response = await openai.createImage({
                         quality: "hd",
                         model: "dall-e-3",
