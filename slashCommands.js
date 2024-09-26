@@ -72,7 +72,7 @@ export const handleSlashCommands = async (interaction) => {
             let style = interaction.options.getBoolean("photo-realistic");
             let blackForestLabs = interaction.options.getBoolean("words-in-image");
             interaction.reply({
-                content: `I have begun crafting a painting of ${description}. I will put it in the gallery when it is complete.`,
+                content: `I have begun crafting a piece of art depicting: ${description}. I will put it in the gallery when it is complete.`,
                 ephemeral: true
             });
             try {
