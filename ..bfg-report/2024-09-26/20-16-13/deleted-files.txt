@@ -1,4 +1,0 @@
-9d252020339cca1ae39696bb6e324700ee1722c7 24 oracle deets.txt
-54ae44c179d9b547be3fd3b8c84d5cd01ac94c88 29 oracle deets.txt
-14c6b9c531803a388c42df220448b7110b19afbc 21 oracle deets.txt
-79c145a6c996a0d0ba54737527de96ba6dd7e429 20 oracle deets.txt
