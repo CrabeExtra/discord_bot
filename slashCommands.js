@@ -7,10 +7,10 @@ import fetch from "node-fetch"
 import fs from 'fs';
 import Replicate from "replicate";
 
-const { OPEN_AI_KEY, REPLICATE_BFL_KEY } = dotenv.config().parsed; 
+const { OPEN_AI_KEY, BFL_API_KEY } = dotenv.config().parsed; 
 
 const replicate = new Replicate({
-    auth: REPLICATE_BFL_KEY
+    auth: BFL_API_KEY
 });
 const configuration = new Configuration({
 	apiKey: OPEN_AI_KEY,
@@ -81,7 +81,7 @@ export const handleSlashCommands = async (interaction) => {
             try {
                 let response;
                 let imageUrl;
-                if(false) {
+                if(blackForestLabs) {
                     imageUrl = await replicate.predictions.create(
                         { 
                             version: "black-forest-labs/flux-pro",
