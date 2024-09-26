@@ -7,6 +7,8 @@ import fetch from "node-fetch"
 import fs from 'fs';
 import { sleep } from "./helperFunctions.js";
 
+const fsAsync = fs.promises;
+
 const { OPEN_AI_KEY, BFL_API_KEY } = dotenv.config().parsed; 
 
 const configuration = new Configuration({
@@ -79,6 +81,7 @@ export const handleSlashCommands = async (interaction) => {
                 let response;
                 let imageUrl;
                 if(blackForestLabs) {
+                    console.log("Creating image based on black forest labs AI.")
                     response = fetch('https://api.bfl.ml/v1/image', {
                         method: 'POST',
                         headers: {
@@ -103,7 +106,7 @@ export const handleSlashCommands = async (interaction) => {
                     let taskId = response.id;
 
                     console.log(taskId);
-                    
+
                     while(true) {
 
                         response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
@@ -115,6 +118,7 @@ export const handleSlashCommands = async (interaction) => {
                         sleep(1000);
                     }
                 } else {
+                    console.log("Creating image based on openAI GPT.")
                     response = await openai.createImage({
                         quality: "hd",
                         model: "dall-e-3",
@@ -136,6 +140,7 @@ export const handleSlashCommands = async (interaction) => {
                 stream.on("finish", async () => {
                     (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send({ files: [`./images/${fileName}.png`]})
                     await incrementImageNumber();
+                    await fsAsync.unlink(`./images/${fileName}.png`);
                 })
                 
             } catch(e) {
