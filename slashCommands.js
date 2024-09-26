@@ -102,6 +102,8 @@ export const handleSlashCommands = async (interaction) => {
 
                     let taskId = response.id;
 
+                    console.log(taskId);
+                    
                     while(true) {
 
                         response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
