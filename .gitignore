@@ -6,3 +6,5 @@ birthdays.db
 /CI ssh key
 /CI ssh key/*
 bfg-1.14.0.jar
+nohup.out
+output.log
