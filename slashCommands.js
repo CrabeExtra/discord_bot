@@ -5,13 +5,10 @@ import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
 import { Configuration, OpenAIApi } from "openai";
 import fetch from "node-fetch"
 import fs from 'fs';
-import Replicate from "replicate";
+import { sleep } from "./helperFunctions.js";
 
 const { OPEN_AI_KEY, BFL_API_KEY } = dotenv.config().parsed; 
 
-const replicate = new Replicate({
-    auth: BFL_API_KEY
-});
 const configuration = new Configuration({
 	apiKey: OPEN_AI_KEY,
 });
@@ -82,18 +79,39 @@ export const handleSlashCommands = async (interaction) => {
                 let response;
                 let imageUrl;
                 if(blackForestLabs) {
-                    imageUrl = await replicate.predictions.create(
-                        { 
-                            version: "black-forest-labs/flux-pro",
-                            input: 
-                            { 
-                                prompt: description,
-                                steps: 25,
-                                width: 1024,
-                                height: 1024
-                            }
+                    response = fetch('https://api.bfl.ml/v1/image', {
+                        method: 'POST',
+                        headers: {
+                          'accept': 'application/json',
+                          'x-key': BFL_API_KEY,
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                          prompt: description,
+                          width: 1024,
+                          height: 1024,
+                          variant: "flux.1-pro",
+                          steps: 50,
+                          prompt_upsampling: false,
+                          seed: null,
+                          guidance: 2.5,
+                          safety_tolerance: 2,
+                          interval: 2
+                        })
+                    });
+
+                    let taskId = response.id;
+
+                    while(true) {
+
+                        response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
+
+                        if(response.status === "Ready") {
+                            imageUrl = response.result.sample;
+                            break;
                         }
-                    );
+                        sleep(1000);
+                    }
                 } else {
                     response = await openai.createImage({
                         quality: "hd",
