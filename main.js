@@ -40,7 +40,7 @@ client.on('ready', async () => {
     }
     commands.forEach(command => {
         c?.create(command)
-            .then((cmd) => console.log(`Created Slash Command ${cmd.name}!`))
+            .then((cmd) => console.log(`Created Slash Command ${cmd.name}!!!`))
             .catch((cmd) => console.log(`Failed to create ${cmd.name} command!`));
     });
 
