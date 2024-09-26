@@ -109,14 +109,13 @@ export const handleSlashCommands = async (interaction) => {
                     log(taskId);
                     let breakVar = false;
                     while(breakVar) {
-
                         response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
                         log(taskId)
                         let jsonImgResponse = await response.json();
                         log(JSON.stringify(jsonImgResponse))
                         if(response.status === "Ready") {
                             log("Image ready, sending...")
-                            imageUrl = jsonImgResponse.result.sample;
+                            imageUrl = JSON.stringify(jsonImgResponse.result.sample).replaceAll('"', '');
                             breakVar = true;
                         } else if (jsonImgResponse.status === "Content Moderated") {
                             breakVar = true;
