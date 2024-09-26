@@ -4,3 +4,4 @@ birthdays.db
 /node_modules
 /backups
 /CI ssh key
+/CI ssh key/*
