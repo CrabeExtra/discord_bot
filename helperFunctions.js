@@ -1,3 +1,5 @@
+import fs from 'fs/promises';
+
 /**
  * 
  * JS equivalent of a thread sleep.
