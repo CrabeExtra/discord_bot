@@ -104,7 +104,7 @@ export const handleSlashCommands = async (interaction) => {
                     });
                     let responseJson = await response.json();
                     log(JSON.stringify(responseJson))
-                    let taskId = JSON.stringify(responseJson.id).replace('"', '');
+                    let taskId = JSON.stringify(responseJson.id).replaceAll('"', '');
 
                     log(taskId);
 
