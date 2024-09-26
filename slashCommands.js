@@ -107,7 +107,7 @@ export const handleSlashCommands = async (interaction) => {
                     let taskId = JSON.stringify(responseJson.id).replaceAll('"', '');
 
                     log(taskId);
-                    let breakVar = false;
+                    let breakVar = true;
                     while(breakVar) {
                         response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
                         log(taskId)
@@ -116,9 +116,9 @@ export const handleSlashCommands = async (interaction) => {
                         if(response.status === "Ready") {
                             log("Image ready, sending...")
                             imageUrl = JSON.stringify(jsonImgResponse.result.sample).replaceAll('"', '');
-                            breakVar = true;
+                            breakVar = false;
                         } else if (jsonImgResponse.status === "Content Moderated") {
-                            breakVar = true;
+                            breakVar = false;
                             throw new Error("Please refrain from making requests in poor taste.");
                         }
                         sleep(1000);
