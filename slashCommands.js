@@ -74,7 +74,7 @@ export const handleSlashCommands = async (interaction) => {
             let style = interaction.options.getBoolean("photo-realistic");
             let blackForestLabs = interaction.options.getBoolean("words-in-image");
             interaction.reply({
-                content: `"here"`,
+                content: `"I have begun crafting a piece of art depicting: ${description}. I will put it in the gallery when it is complete. photorealistic? ${style ? "yes" : "no"}. Will I account for words in the image? ${blackForestLabs ? "yes" : "no"}"`,
                 ephemeral: true
             });
             try {

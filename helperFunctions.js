@@ -17,7 +17,7 @@ export const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
  */
 export const log = async (textToAppend) => {
     try {
-        let filePath = './butler.log' ;
+        let filePath = './butler.log';
         // Check if the file exists
         await fs.access(filePath);
         // File exists, append to it
