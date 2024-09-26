@@ -82,7 +82,7 @@ export const handleSlashCommands = async (interaction) => {
                 let imageUrl;
                 if(blackForestLabs) {
                     await log("Creating image based on black forest labs AI.")
-                    response = fetch('https://api.bfl.ml/v1/image', {
+                    response = await fetch('https://api.bfl.ml/v1/image', {
                         method: 'POST',
                         headers: {
                           'accept': 'application/json',
@@ -102,7 +102,7 @@ export const handleSlashCommands = async (interaction) => {
                           interval: 2
                         })
                     });
-
+                    
                     let taskId = JSON.stringify(JSON.parse(response.id));
 
                     log(taskId);
