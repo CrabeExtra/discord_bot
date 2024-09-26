@@ -113,8 +113,8 @@ export const handleSlashCommands = async (interaction) => {
                         log(taskId)
                         let jsonImgResponse = await response.json();
                         log(JSON.stringify(jsonImgResponse))
-                        log(JSON.stringify(response.status).replaceAll('"', ''));
-                        if(JSON.stringify(response.status).replaceAll('"', '') === "Ready") {
+                        log(JSON.stringify(jsonImgResponse.status).replaceAll('"', ''));
+                        if(JSON.stringify(jsonImgResponse.status).replaceAll('"', '') === "Ready") {
                             log("Image ready, sending...")
                             imageUrl = JSON.stringify(jsonImgResponse.result.sample).replaceAll('"', '');
                             breakVar = false;
