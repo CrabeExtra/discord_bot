@@ -64,6 +64,11 @@ const sendReply = async (content, msg) => {
     }
 }
 
+/**
+ * Honestly this code is messy, should be separated out further and cleaned up, fewer floating bits of text and more accurate error handling. But it works.
+ * @param {*} content 
+ * @param {*} msg 
+ */
 const handleReplies = async (content, msg) => {
     try {
         let contextWords = await getWords();
