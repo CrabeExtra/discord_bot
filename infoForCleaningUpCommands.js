@@ -3,18 +3,18 @@
 //     let guild = client.guilds.cache.get(guildId);
 //     guild.commands.fetch(interaction.commandId) // id of your command
 //       .then( (command) => {
-//     console.log(`Fetched command ${command.name}`)
+//     log(`Fetched command ${command.name}`)
 //     // further delete it like so:
 //     command.delete()
-//     console.log(`Deleted command ${command.name}`)
-//     }).catch(console.error);
+//     log(`Deleted command ${command.name}`)
+//     }).catch(error);
 
 //     client.application?.commands.fetch(interaction.commandId) // id of your command
 //       .then( (command) => {
-//     console.log(`Fetched command ${command.name}`)
+//     log(`Fetched command ${command.name}`)
 //     // further delete it like so:
 //     command.delete()
-//     console.log(`Deleted command ${command.name}`)
-//     }).catch(console.error);
+//     log(`Deleted command ${command.name}`)
+//     }).catch(error);
 
 // }

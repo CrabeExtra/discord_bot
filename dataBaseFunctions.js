@@ -1,127 +1,149 @@
-import { open } from 'sqlite'
-import sqlite3 from 'sqlite3'
+import { DatabaseSync } from "node:sqlite";
+import { error } from './helperFunctions.js';
 
-export async function openDb () {
-    return await open({
-        filename: './birthdays.db',
-        driver: sqlite3.Database
-    })
+export function openDb() {
+    return new DatabaseSync("./birthdays.db");
 }
 
 export const initialise = async () => {
-    let db = await openDb();
-    await db.run("CREATE TABLE IF NOT EXISTS birthdays(id TEXT PRIMARY KEY, username TEXT, day TEXT, month TEXT, year TEXT)");
-    await db.run("CREATE TABLE IF NOT EXISTS imageNonce(id TEXT PRIMARY KEY, nonce)");
-    await db.run("CREATE TABLE IF NOT EXISTS context(words)");
+    const db = openDb();
+
+    db.prepare(`
+        CREATE TABLE IF NOT EXISTS birthdays(
+            id TEXT PRIMARY KEY,
+            username TEXT,
+            day TEXT,
+            month TEXT,
+            year TEXT
+        )
+    `).run();
+
+    db.prepare(`
+        CREATE TABLE IF NOT EXISTS imageNonce(
+            id TEXT PRIMARY KEY,
+            nonce
+        )
+    `).run();
+
+    db.prepare(`
+        CREATE TABLE IF NOT EXISTS context(
+            words
+        )
+    `).run();
 }
 
 
 export const addBirthday = async (userId, username, day, month, year) => {
-    let db = await openDb();
+    const db = openDb();
     try {
         if(day > 31 || day <= 0 || month > 12 || month <= 0) {
             return 'error'
         } else {
-            await db.run(`INSERT OR REPLACE INTO birthdays(id, username, day, month, year) VALUES (:id, :username, :day, :month, :year)`, { ':id': userId, ':username': username, ':day': day, ':month': month, ":year": year});
-            
+            db.prepare(`
+                INSERT OR REPLACE INTO birthdays(id, username, day, month, year)
+                VALUES (?, ?, ?, ?, ?)
+            `).run(userId, username, day, month, year);
             return 'success';
         }
         
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error';
     }
 }
 
 export const getBirthday = async (userId) => {
-    let db = await openDb();
+    const db = openDb();
     try {
         //return await db.query(`SELECT * FROM birthdays WHERE id=?`, [userId]);
-        return await db.get(`SELECT * FROM birthdays WHERE id=${userId}`);
+        return db.prepare(`SELECT * FROM birthdays WHERE id = ?`).get(userId);
     } catch(e) {
-        console.error(e)
+        error(e)
         return 'error'
     }
 }
 
 export const getAllBirthdays = async () => {
-    let db = await openDb();
+    const db = openDb();
     try {
-        //return await db.query(`SELECT * FROM birthdays`);
-        return await db.all(`SELECT * FROM birthdays`);
+        return db.prepare(`SELECT * FROM birthdays`).all();
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error'
     }
 }
 
 export const deleteBirthday = async (userId) => {
-    let db = await openDb();
+    const db = openDb();
     try {
-        await db.run(`DELETE FROM birthdays WHERE id=${userId}`);
+        db.prepare(`DELETE FROM birthdays WHERE id = ?`).run(userId);
         return "success";
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error';
     }
 }
 
 export const incrementImageNumber = async () => {
-    let db = await openDb();
+    const db = openDb();
     try {
         let newNonce = (await getImageNumber())[0].nonce + 1;
 
         if(newNonce <= 100) {
-            await db.run(`INSERT OR REPLACE INTO imageNonce(id, nonce) VALUES (1, ${newNonce})`);
+            db.prepare(`DELETE FROM birthdays WHERE id = ?`).run();
         } else {
-            await db.run(`INSERT OR REPLACE INTO imageNonce(id, nonce) VALUES (1, ${1})`)
+            db.prepare(`
+                INSERT OR REPLACE INTO imageNonce(id, nonce)
+                VALUES (1, ?)
+            `).run(newNonce);
         }
         
         return 'success'
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error'
     }
     
 }
 
 export const getImageNumber = async () => {
-    let db = await openDb();
+    const db = openDb();
     try {
-        return await db.all(`SELECT * FROM imageNonce`);
+        return db.prepare(`SELECT * FROM imageNonce`).all();
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error'
     }
 }
 
 export const addWords = async (words) => {
-    let db = await openDb();
+    const db = openDb();
     try {
-        await db.run(`INSERT INTO context(words) VALUES (:words)`, { ":words": words})
+        db.prepare(`INSERT INTO context(words) VALUES (?)`).run(words);
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error'
     }
 }
 
 export const getWords = async () => {
-    let db = await openDb();
+    const db = openDb();
     try {
-        return await db.all(`SELECT words FROM context`)
+        return db.prepare(`SELECT words FROM context`).all();
     } catch(e) {
-        console.error(e);
+        error(e);
         return 'error'
     }
 }
 
 export const clearWords = async() => {
-    let db = await openDb();
+    const db = openDb();
     try {
-        await db.run("DROP TABLE context");
-        await db.run("CREATE TABLE IF NOT EXISTS context(words)");
+        db.prepare(`DROP TABLE IF EXISTS context`).run();
+
+        db.prepare(`CREATE TABLE IF NOT EXISTS context(words)`).run();
     } catch(e) {
-        console.error(e);
+        error(e);
     }
     
 }

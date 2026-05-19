@@ -1,6 +1,6 @@
 .env
 birthdays.db
-
+./birthdays.db
 /node_modules
 /backups
 /CI ssh key
@@ -8,3 +8,4 @@ birthdays.db
 bfg-1.14.0.jar
 nohup.out
 output.log
+butler.log

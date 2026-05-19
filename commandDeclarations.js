@@ -29,25 +29,13 @@ export const commands = [
     },
     {
         name: "draw_picture",
-        description: "Request a picture of your description be painted by the butler",
+        description: "Request a picture of your description be created by the butler",
         options: [
             {
                 name: "description",
-                description: "What do you want the Butler to paint?",
+                description: "What do you want the Butler to draw?",
                 required: true,
                 type: 3
-            },
-            {
-                name: "words-in-image",
-                description: "Do you want my painting to contain any written text?",
-                required: false,
-                type: 5
-            },
-            {
-                name: "photo-realistic",
-                description: "Do you want the painting to be photo-realistic?",
-                required: false,
-                type: 5
             }
         ]
     },

@@ -2,20 +2,16 @@ import { addBirthday, deleteBirthday, getBirthday, incrementImageNumber, getImag
 import * as cron from 'cron';
 import * as dotenv from "dotenv"
 import { ouijaBoard, general, toTrigger, spiritBox } from "./phas.js";
-import { Configuration, OpenAIApi } from "openai";
 import fetch from "node-fetch"
 import fs from 'fs';
-import { sleep, log } from "./helperFunctions.js";
+import { sleep, log, error } from "./helperFunctions.js";
+import { InferenceClient } from "@huggingface/inference";
 
 const fsAsync = fs.promises;
 
-const { OPEN_AI_KEY, BFL_API_KEY } = dotenv.config().parsed; 
+const { HF_TOKEN } = dotenv.config().parsed; 
 
-const configuration = new Configuration({
-	apiKey: OPEN_AI_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
+const client = new InferenceClient(HF_TOKEN);
 
 export const handleSlashCommands = async (interaction) => {
     let userId = interaction.user.id;
@@ -71,95 +67,62 @@ export const handleSlashCommands = async (interaction) => {
         break;
         case "draw_picture":
             let description = interaction.options.getString("description");
-            let style = interaction.options.getBoolean("photo-realistic");
-            let blackForestLabs = interaction.options.getBoolean("words-in-image");
-            interaction.reply({
-                content: `I have begun crafting a piece of fine art depicting ${description}. I shall put it in the gallery when it is complete. photorealistic? ${style ? "yes" : "no"}. Will I account for words in the image? ${blackForestLabs ? "yes" : "no"}`,
+
+            await interaction.reply({
+                content: `I have begun crafting a piece of fine art depicting ${description}. I shall put it in the gallery when it is complete.`,
                 ephemeral: true
             });
+
             try {
-                let response;
-                let imageUrl;
-                if(blackForestLabs) {
-                    log("Creating image based on black forest labs AI.")
-                    response = await fetch('https://api.bfl.ml/v1/image', {
-                        method: 'POST',
-                        headers: {
-                          'accept': 'application/json',
-                          'x-key': BFL_API_KEY,
-                          'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                          prompt: description,
-                          width: 1024,
-                          height: 1024,
-                          variant: "flux.1-pro",
-                          steps: 50,
-                          prompt_upsampling: false,
-                          seed: null,
-                          guidance: 2.5,
-                          safety_tolerance: 2,
-                          interval: 2
-                        })
-                    });
-                    let responseJson = await response.json();
-                    log(JSON.stringify(responseJson))
-                    let taskId = JSON.stringify(responseJson.id).replaceAll('"', '');
+                log("Creating image based on Hugging Face SDXL.");
 
-                    log(taskId);
-                    let breakVar = true;
-                    while(breakVar) {
-                        response = await fetch(`https://api.bfl.ml/v1/get_result?id=${taskId}`);
-                        log(taskId)
-                        let jsonImgResponse = await response.json();
-                        log(JSON.stringify(jsonImgResponse))
-                        log(JSON.stringify(jsonImgResponse.status).replaceAll('"', ''));
-                        if(JSON.stringify(jsonImgResponse.status).replaceAll('"', '') === "Ready") {
-                            log("Image ready, sending...")
-                            imageUrl = JSON.stringify(jsonImgResponse.result.sample).replaceAll('"', '');
-                            breakVar = false;
-                        } else if (jsonImgResponse.status === "Content Moderated") {
-                            breakVar = false;
-                            throw new Error("Please refrain from making requests in poor taste.");
-                        }
-                        sleep(1000);
+                const prompt = description;
+
+                const imageBlob = await client.textToImage({
+                    provider: 'auto',
+                    model: "stabilityai/stable-diffusion-xl-base-1.0",
+                    inputs: prompt,
+                    parameters: {
+                        num_inference_steps: 5
                     }
-                } else {
-                    log("Creating image based on openAI GPT.")
-                    response = await openai.createImage({
-                        quality: "hd",
-                        model: "dall-e-3",
-                        prompt: description,
-                        n: 1,
-                        size: "1024x1024",
-                        style: style ? "vivid" : "natural"
-                    });
-                    // console.log(response);
-                    imageUrl = response.data.data[0].url;
-                }
-                    
-                let fileName = `image_${(await getImageNumber())[0].nonce}`
+                });
 
-                let res = await fetch(imageUrl);
-                    
-                let stream = res.body.pipe(fs.createWriteStream(`./images/${fileName}.png`));
+                // convert Blob → Buffer (Node.js)
+                const buffer = Buffer.from(await imageBlob.arrayBuffer());
 
-                stream.on("finish", async () => {
-                    (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send({ files: [`./images/${fileName}.png`]})
-                    await incrementImageNumber();
-                    await fsAsync.unlink(`./images/${fileName}.png`);
-                })
-                
-            } catch(e) {
-                console.log(e);
-                (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send("It appears I have run into some problems creating the painting your requested good citizen.")
+                let fileName = `image_${(await getImageNumber())[0].nonce}.png`;
+                let filePath = `./images/${fileName}`;
+
+                await fsAsync.writeFile(filePath, buffer);
+
+                const channel = interaction.guild.channels.cache.find(
+                    (i) => i.name === "gallery"
+                );
+
+                await channel.send({
+                    files: [filePath]
+                });
+
+                await incrementImageNumber();
+                await fsAsync.unlink(filePath);
+
+            } catch (e) {
+                log(e);
+
+                const channel = interaction.guild.channels.cache.find(
+                    (i) => i.name === "gallery"
+                );
+
+                await channel.send(
+                    "It appears I have run into some problems creating the painting your requested, good citizen."
+                );
+
                 try {
-                    (await interaction.guild.channels.cache.find((i) => i.name === 'gallery')).send(JSON.stringify(e.message))
-                } catch(e2) {
-                    console.log("unable to send error to Discord.")
+                    await channel.send(JSON.stringify(e.message));
+                } catch (e2) {
+                    log("unable to send error to Discord.");
                 }
             }
-            
 
         break;
         case "reset_context":
@@ -170,7 +133,7 @@ export const handleSlashCommands = async (interaction) => {
                     ephemeral: true
                 });
             } catch(e) {
-                console.log(e);
+                log(e);
                 interaction.reply({
                     content: `There has been an error, please try again or contact Jude.`,
                     ephemeral: true
@@ -193,7 +156,7 @@ export const handleSlashCommands = async (interaction) => {
                 });
 
             } catch(e) {
-                console.log(e);
+                log(e);
                 interaction.reply({
                     content: `There has been an error, please try again or contact Jude.`,
                     ephemeral: true
