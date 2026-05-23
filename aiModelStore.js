@@ -30,12 +30,4 @@ export const models = [
   genAI.getGenerativeModel({
     model: "gemini-2.5-flash-lite",
   }),
-
-//   genAI.getGenerativeModel({
-//     model: "gemma-4-31b-it",
-//   }),
-
-//   genAI.getGenerativeModel({
-//     model: "gemma-4-26b-a4b-it",
-//   })
 ];
